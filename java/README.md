@@ -23,7 +23,7 @@ Attributes
 Usage
 =====
 
-Simply include the recipe where you want Java installed.
+Simply include the recipe where you want Java installed. If you want to install a JDK, use the `jdk` recipe.
 
 If you would like to use the Sun flavor of Java, create a role and set the `java[install_flavor]` attribute to `'sun'`.  
 
