@@ -38,6 +38,11 @@ directory "/var/log/doat" do
   mode "0777"
 end
 
+directory "/var/run/doat" do
+  owner "doat"
+  mode "0755"
+end
+
 directory "/opt/doat" do
   owner "doat"
   group "doat"
