@@ -38,6 +38,12 @@ end
 # are broken...this feels like Rubygems!
 # http://stackoverflow.com/questions/4324558/whats-the-proper-way-to-install-pip-virtualenv-and-distribute-for-python
 # https://bitbucket.org/ianb/pip/issue/104/pip-uninstall-on-ubuntu-linux
+remote_file "#{Chef::Config[:file_cache_path]}/distribute_setup.py" do
+  source "http://python-distribute.org/distribute_setup.py"
+  notifies :run, "bash[install-pip]", :immediately
+  not_if "which pip"
+end
+
 bash "install-pip" do
   cwd Chef::Config[:file_cache_path]
   code <<-EOH
@@ -45,12 +51,6 @@ bash "install-pip" do
   python distribute_setup.py
   easy_install pip
   EOH
-  not_if "which pip"
-  action :nothing
-end
-remote_file "#{Chef::Config[:file_cache_path]}/distribute_setup.py" do
-  source "http://python-distribute.org/distribute_setup.py"
-  notifies :run, "bash[install-pip]", :immediately
   not_if "which pip"
 end
 
