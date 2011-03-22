@@ -3,6 +3,10 @@ include_recipe "redis"
 include_recipe "Doat::scribe-client"
 include_recipe "python"
 
+%w(Core common bin/x86).each do |component|
+  doat_svn component
+end
+
 %w(python-crypto python-nltk python-mysqldb python-enchant).each do |pkg|
   package pkg
 end

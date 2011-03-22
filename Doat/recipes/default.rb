@@ -47,14 +47,3 @@ directory "/opt/doat" do
   owner "doat"
   group "doat"
 end
-
-common_settings = data_bag_item('doat_config', 'common')
-subversion "/opt/doat" do
-  repository common_settings['repo_url']
-  user "doat"
-  group "doat"
-  svn_arguments "--non-interactive --no-auth-cache --trust-server-cert"
-  svn_info_args "--non-interactive --no-auth-cache --trust-server-cert"
-  svn_username common_settings['repo_user']
-  svn_password common_settings['repo_password']
-end

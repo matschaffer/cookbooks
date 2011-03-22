@@ -1,5 +1,9 @@
 include_recipe "Doat::webserver_common"
 
+%w(www/app www/gondor www/libraries).each do |component|
+  doat_svn component
+end
+
 app_config = data_bag_item(:doat_config, :webapp)
 sql = search(:endpoints, "type:rds AND db:#{app_config[:db]}").first
 sql_credentials = search(:credentials, "usage:db_#{app_config[:db]}").first

@@ -1,5 +1,9 @@
 include_recipe "Doat::webserver_common"
 
+%w(www/app www/gondor www/libraries).each do |component|
+  doat_svn component
+end
+
 template "/opt/doat/www/gondor/services/doat/0.4/include/Setting.local.php" do
   source "api-Settings.local.php.erb"
   notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
