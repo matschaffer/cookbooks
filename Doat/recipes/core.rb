@@ -3,7 +3,7 @@ include_recipe "redis"
 include_recipe "Doat::scribe-client"
 include_recipe "python"
 
-%w(Core common bin/x86).each do |component|
+["Core", "common", "bin/#{node[:kernel][:machine]}", "melt"].each do |component|
   doat_svn component
 end
 
@@ -25,12 +25,18 @@ redis_instance "search" do
   port 6379
 end
 
-link "/etc/init.d/cored" do
-  to "/opt/doat/etc/servers/core/init.d/cored"
+directory "/opt/doat/data" do
+  owner "doat"
+  group "doat"
+  mode "0755"
 end
 
-link "/etc/init.d/autocompleted" do
-  to "/opt/doat/etc/scripts/autocompleted"
+cookbook_file "/etc/init.d/cored.conf" do
+  source "cored.upstart.conf"
+end
+
+cookbook_file "/etc/init/autocompleted.conf" do
+  source "autocompleted.upstart.conf"
 end
 
 if node[:redis][:instances][:melt][:replication][:role] == "master"
@@ -42,7 +48,7 @@ app_config = data_bag_item(:doat_config, :core)
 sql_host = search(:endpoints, "type:rds AND db:#{app_config["db"]}").first
 sql_credentials = search(:credentials, "usage:db_#{app_config["db"]}").first
 
-template "/opt/doat/etc/servers/core/core.conf" do
+template "/etc/doat/core.conf" do
   source "core.conf.erb"
   variables :redis_melt_master => redis_melt_master, :redis_melt_slave => node, :redis_search_node => node,
     :sql_credentials => sql_credentials, :sql => sql_host, :autocomplete_node => node,
@@ -50,12 +56,38 @@ template "/opt/doat/etc/servers/core/core.conf" do
   notifies :restart, "service[cored]"
 end
 
+template "/etc/doat/autocomplete.conf" do
+  source "autocomplete.conf.erb"
+  notifies :restart, "service[autocompleted]"
+end
+
 service "autocompleted" do
   action [:start, :enable]
   supports :restart => false
+  provider ::Chef::Provider::Service::Upstart
 end
 
 service "cored" do
   action [:start, :enable]
+  provider ::Chef::Provider::Service::Upstart
+end
+
+if node[:doat][:core][:master]
+  template "/etc/doat/synq.conf" do
+    source "synqd.conf.erb"
+    mode "0644"
+    owner "doat"
+    notifies :restart, "service[synqd]"
+  end
+
+  cookbook_file "/etc/init/synqd.conf" do
+    source "synqd.upstart.conf"
+  end
+
+  service "synqd" do
+    action [:start, :enable]
+    supports :restart => false
+    provider ::Chef::Provider::Service::Upstart
+  end
 end
 

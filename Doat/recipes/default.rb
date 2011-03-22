@@ -34,6 +34,10 @@ end
 
 group "doat"
 
+directory "/etc/doat" do
+  mode "0755"
+end
+
 directory "/var/log/doat" do
   mode "0777"
 end

@@ -22,5 +22,6 @@ define :doat_svn do
     svn_info_args "--non-interactive --no-auth-cache --trust-server-cert"
     svn_username common_settings['repo_user']
     svn_password common_settings['repo_password']
+    action :checkout
   end
 end
