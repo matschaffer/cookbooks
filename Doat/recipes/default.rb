@@ -47,3 +47,14 @@ directory "/opt/doat" do
   owner "doat"
   group "doat"
 end
+
+file "/etc/ld.so.conf.d/doat.conf" do
+  content "/opt/doat/bin/#{node[:kernel][:machin]}"
+  mode "0644"
+  notifies :run, "execute[ldconfig]"
+end
+
+execute "ldconfig" do
+  action :nothing
+end
+

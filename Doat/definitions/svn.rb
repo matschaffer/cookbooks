@@ -1,8 +1,8 @@
 require 'uri'
-# get data bag outside of passed block, we only need to call data_bag_item once
-common_settings = data_bag_item('doat_config', 'common')
+include_recipe "subversion"
 
 define :doat_svn do
+  common_settings = data_bag_item('doat_config', 'common')
   repo_url = common_settings['repo_url']
   repo_url = repo_url + '/' unless repo_url.end_with?('/')
   
