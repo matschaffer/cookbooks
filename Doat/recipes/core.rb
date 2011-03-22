@@ -31,7 +31,7 @@ directory "/opt/doat/data" do
   mode "0755"
 end
 
-cookbook_file "/etc/init.d/cored.conf" do
+cookbook_file "/etc/init/cored.conf" do
   source "cored.upstart.conf"
 end
 
