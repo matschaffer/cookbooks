@@ -5,8 +5,8 @@ include_recipe "Doat::webserver_common"
 end
 
 app_config = data_bag_item(:doat_config, :flyapps)
-sql = search(:endpoints, "type:rds AND db:#{app_config[:db]}").first
-sql_credentials = search(:credentials, "usage:db_#{app_config[:db]}").first
+sql = search(:endpoints, "type:rds AND db:#{app_config["db"]}").first
+sql_credentials = search(:credentials, "usage:db_#{app_config["db"]}").first
 
 template "/opt/doat/apps/_common/Settings.local.php" do
   source "prod-apps-settings.php.erb"

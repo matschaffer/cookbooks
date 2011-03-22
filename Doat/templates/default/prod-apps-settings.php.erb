@@ -15,7 +15,11 @@
 
     //solr host
     define('SOLR_HOST', 'http://solr:8080/');
-
+    define("CACHE_SERVERS", serialize(array(
+      <%= @memcahe_nodes.map do |memcache_node|
+      "array(\"host\" => #{memcache_node[:ipaddress]}, \"port\" =>#{memcache_node[:memcache][:port]})"
+    end.join(",\n") %>
+    )));
 
     /* APPS */
 
