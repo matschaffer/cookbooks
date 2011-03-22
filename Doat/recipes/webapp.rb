@@ -1,6 +1,6 @@
 include_recipe "Doat::webserver_common"
 
-%w(www/app www/gondor www/libraries).each do |component|
+["www/app","www/libraries", "bin/#{node[:kernel][:machine]}"].each do |component|
   doat_svn component
 end
 
