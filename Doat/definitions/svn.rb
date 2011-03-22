@@ -1,7 +1,7 @@
 require 'uri'
-include_recipe "subversion"
 
 define :doat_svn do
+  include_recipe "subversion"
   common_settings = data_bag_item('doat_config', 'common')
   repo_url = common_settings['repo_url']
   repo_url = repo_url + '/' unless repo_url.end_with?('/')
