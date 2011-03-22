@@ -14,4 +14,14 @@ template ::File.join(node[:nginx][:conf_dir], "sites-enabled", "doat-api") do
   notifies :reload, "service[nginx]"
 end
 
+core_nodes = []
+all_providers_for_service(:core).each do |core|
+  core_nodes << {:host => core[:ipaddress], :port => core[:doat][:core][:port]}
+end
+
+pen_cluster "core" do
+  port 9091
+  nodes core_nodes
+end
+
 nginx_site "doat-api"
