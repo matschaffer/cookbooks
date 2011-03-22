@@ -91,3 +91,4 @@ if node[:doat][:core][:master]
   end
 end
 
+provide_service(:core)
