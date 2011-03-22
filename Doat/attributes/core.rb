@@ -8,3 +8,4 @@ default[:doat][:core][:workers] = case node[:ec2][:instance_type]
 default[:doat][:core][:monitor_port] = 9000
 default[:doat][:core][:ping_port] = 9001
 default[:doat][:core][:monitor_sample_length] = 3600
+default[:doat][:core][:master] = false
