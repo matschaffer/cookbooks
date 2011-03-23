@@ -78,6 +78,7 @@ module ClusterServiceDiscovery
     Chef::Log.debug("Search query: \"#{search_query}\"")
     servers = search(:node, search_query )
     Chef::Log.debug("#{servers.count} servers returned from search")
+    return servers if servers.count == 0
     all_servers = servers.find_all do |server|
       server[:cluster][:services][service_name] && server[:cluster][:services][service_name]['timestamp']
     end
