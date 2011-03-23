@@ -3,7 +3,7 @@ include_recipe "redis"
 include_recipe "Doat::scribe-client"
 include_recipe "python"
 
-["Core", "common", "bin/#{node[:kernel][:machine]}", "melt"].each do |component|
+["Core", "common", "bin/#{node[:doat][:arch]}", "melt"].each do |component|
   doat_svn component
 end
 

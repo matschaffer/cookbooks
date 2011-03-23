@@ -53,7 +53,7 @@ directory "/opt/doat" do
 end
 
 file "/etc/ld.so.conf.d/doat.conf" do
-  content "/opt/doat/bin/#{node[:kernel][:machin]}"
+  content "/opt/doat/bin/#{node[:doat][:arch]}"
   mode "0644"
   notifies :run, "execute[ldconfig]"
 end
