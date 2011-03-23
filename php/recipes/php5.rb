@@ -26,7 +26,11 @@ include_recipe "php::module_gd"
 include_recipe "php::module_pgsql"
 include_recipe "php::pear"
 
-memcache_servers = all_providers_for_service("memcached")
+if node[:php][:session][:save_handler] == "memcache" or node[:php][:session][:save_handler] == "memcached"
+  memcache_servers = all_providers_for_service("memcached")
+else
+  memcache_servers = []
+end
 template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/php.ini"}, "default" => "/etc/php5/apache2/php.ini") do
   source "php.ini.erb"
   owner "root"
