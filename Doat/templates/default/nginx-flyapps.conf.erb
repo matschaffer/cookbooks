@@ -22,7 +22,7 @@ server {
 
   location ~ .*\.php(/.*)?$ {
     include fastcgi_params;
-    fastcgi_pass <%= if node[:php][:cgi][:binaddress].start_with?("/"); "unix:"; else ""; end + node[:php][:cgi][:bindaddress] %>;
+    fastcgi_pass <%= if node[:php][:cgi][:bindaddress].start_with?("/"); "unix:"; else ""; end + node[:php][:cgi][:bindaddress] %>;
     fastcgi_split_path_info ^(.+\.php)(.*)$;
     fastcgi_param SCRIPT_NAME     $fastcgi_script_name;
     fastcgi_param PATH_INFO       $fastcgi_path_info;
