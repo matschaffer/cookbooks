@@ -1,7 +1,7 @@
 server {
   server_name api.doat.com api.prod.doat.com;
   listen 80;
-  listen 443 ssl;
+  listen 443 default ssl;
   ssl_certificate <%= node[:nginx][:dir] %>/ssl/<%= node[:doat][:web][:ssl_certificate] %>;
   ssl_certificate_key <%= node[:nginx][:dir] %>/ssl/<%= node[:doat][:web][:ssl_certificate_key] %>;
   root /opt/doat/www/gondor;
@@ -18,7 +18,12 @@ server {
   }
   location ~ .*\.php(/.*)?$ {
     include fastcgi_params;
-    fastcgi_pass <%= if node[:php][:cgi][:bindaddress].start_with?("/"); "unix:"; else ""; end + node[:php][:cgi][:bindaddress] %>;
+    fastcgi_pass <%= if node[:php][:cgi][:bindaddress].start_with?("/")
+                         node[:php][:cgi][:bindaddress]
+                       else
+                         node[:ipaddress] + ":" node[:php][:cgi][:port]
+                       end
+                 %>;
     fastcgi_split_path_info ^(.+\.php)(.*)$;
     fastcgi_param SCRIPT_NAME     $fastcgi_script_name;
     fastcgi_param PATH_INFO       $fastcgi_path_info;
