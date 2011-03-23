@@ -46,7 +46,6 @@ service "php-cgi" do
   action :nothing
 end
 
-
 memcache_servers = all_providers_for_service("memcached")
 template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/php.ini"}, "default" => "/etc/php5/cgi/php.ini") do
   source "php.ini.erb"
@@ -55,6 +54,14 @@ template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/et
   mode 0644
   variables :memcache_servers => memcache_servers
   notifies :restart, resources(:service => "php-cgi"), :delayed
+end
+
+# handle socket directory
+if node[:php][:cgi][:bindaddress].start_with?("/")
+  directory ::File.dirname(node[:php][:cgi][:bindaddress]) do
+    owner "www-data"
+    mode "0755"
+  end
 end
 
 template "/etc/init.d/php-cgi" do
