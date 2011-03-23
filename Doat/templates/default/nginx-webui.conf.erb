@@ -16,7 +16,7 @@ server {
   location ~ .*\.php(/.*)?$ {
     include fastcgi_params;
     fastcgi_pass <%= if node[:php][:cgi][:bindaddress].start_with?("/")
-                         node[:php][:cgi][:bindaddress]
+                         "unix:" + node[:php][:cgi][:bindaddress]
                        else
                          node[:ipaddress] + ":" + node[:php][:cgi][:port]
                        end
