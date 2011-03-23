@@ -7,7 +7,7 @@ PHP_FCGI_CHILDREN=<%=node[:php][:cgi][:children]%>
 PHP_FCGI_MAX_REQUESTS=<%=node[:php][:cgi][:max_requests]%>
 PHP_CGI=<%=node[:php][:cgi][:bin]%>
 PHP_PIDFILE=<%=node[:php][:cgi][:pidfile]%>
-PHP_BIND=<%= node[:php][:cgi][:bindaddress] + (unless node[:php][:cgi][:bindaddress].start_with?("/"); ":#{node[:php][:cgi][:port]}"; end) %>
+PHP_BIND=<%= node[:php][:cgi][:bindaddress] %><%= unless node[:php][:cgi][:bindaddress].start_with?("/"); ":#{node[:php][:cgi][:port]}"; end %>
 <%if node[:php][:cgi][:php_ini] %>
 PHP_INI="<%=node[:php][:cgi][:php_ini]%>"
 <%end%>
