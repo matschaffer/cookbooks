@@ -6,7 +6,6 @@ directory node[:scribe][:tmp_dir] do
 end
 
 scribe = provider_for_service(:scribe)
-Chef::Log.info scribe.inspect
 
 directory node[:scribe][:conf_dir] do
   mode "0755"
@@ -19,7 +18,7 @@ template conf_file do
 end
 
 template "/etc/init/scribe-client.conf" do
-  source "scribe.upstart.conf"
+  source "scribe.upstart.conf.erb"
   variables :conf_file => conf_file
 end
 
