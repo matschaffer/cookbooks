@@ -1,6 +1,6 @@
 include_recipe "Doat::webserver_common"
 
-["www/app","www/libraries", "bin/#{node[:kernel][:machine]}"].each do |component|
+["www/app","www/libraries", "bin/#{node[:kernel][:machine].sub('686', '386')}"].each do |component|
   doat_svn component
 end
 
