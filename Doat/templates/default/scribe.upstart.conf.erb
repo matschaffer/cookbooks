@@ -1,0 +1,13 @@
+author "Avishai Ish-Shalom <avishai@fewbytes.com>"
+description "Scribe logging daemon"
+
+expect fork
+service
+respawn
+respawn limit 5 15
+
+pre-start script
+  mkdir -p <%= node[:scribe][:tmp_dir] %>
+end script
+
+exec /sbin/start-stop-daemon --start --exec <%= node[:scribe][:daemon] %> -c <%= node[:scribe][:user] %> --pidfile /var/run/scribe-client.pid -- -c <%= @conf_file %>

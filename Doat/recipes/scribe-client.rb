@@ -6,17 +6,25 @@ directory node[:scribe][:tmp_dir] do
 end
 
 scribe = provider_for_service(:scribe)
+Chef::Log.info scribe.inspect
 
-template "/opt/doat/etc/Scribe/scribe-client.conf" do
+directory node[:scribe][:conf_dir] do
+  mode "0755"
+end
+
+conf_file = ::File.join(node[:scribe][:conf_dir], "scribe-client.conf")
+template conf_file do
   source "scribe-client.conf.erb"
   variables :scribe => scribe
 end
 
-link "/etc/init.d/scribe-client" do
-  to "/opt/doat/etc/servers/scribe/init/scribed-client"
+template "/etc/init/scribe-client.conf" do
+  source "scribe.upstart.conf"
+  variables :conf_file => conf_file
 end
 
 service "scribe-client" do
   action [:enable, :start]
   running true
+  provider ::Chef::Provider::Service::Upstart
 end
