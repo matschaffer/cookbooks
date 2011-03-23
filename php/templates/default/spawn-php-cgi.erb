@@ -7,8 +7,7 @@ PHP_FCGI_CHILDREN=<%=node[:php][:cgi][:children]%>
 PHP_FCGI_MAX_REQUESTS=<%=node[:php][:cgi][:max_requests]%>
 PHP_CGI=<%=node[:php][:cgi][:bin]%>
 PHP_PIDFILE=<%=node[:php][:cgi][:pidfile]%>
-PHP_PORT=<%=node[:php][:cgi][:port]%>
-PHP_BINDADDRESS=<%=node[:php][:cgi][:bindaddress]%>
+PHP_BIND=<%= node[:php][:cgi][:bindaddress] + (unless node[:php][:cgi][:bindaddress].start_with?("/"); ":#{node[:php][:cgi][:port]}"; end) %>
 <%if node[:php][:cgi][:php_ini] %>
 PHP_INI="<%=node[:php][:cgi][:php_ini]%>"
 <%end%>
@@ -16,7 +15,7 @@ PHP_INI="<%=node[:php][:cgi][:php_ini]%>"
 [ -n "$PHP_INI" ] && PHP_OPTIONS="-c $PHP_INI" 
 
 start () {
-  start-stop-daemon -x $PHP_CGI -b -m --start --oknodo -c $PHP_USER -g $PHP_USER --pidfile $PHP_PIDFILE --startas /usr/bin/env -- PHP_FCGI_CHILDREN=$PHP_FCGI_CHILDREN PHP_FCGI_MAX_REQUESTS=$PHP_FCGI_MAX_REQUESTS $PHP_CGI -b $PHP_BINDADDRESS:$PHP_PORT $PHP_OPTIONS
+  start-stop-daemon -x $PHP_CGI -b -m --start --oknodo -c $PHP_USER -g $PHP_USER --pidfile $PHP_PIDFILE --startas /usr/bin/env -- PHP_FCGI_CHILDREN=$PHP_FCGI_CHILDREN PHP_FCGI_MAX_REQUESTS=$PHP_FCGI_MAX_REQUESTS $PHP_CGI -b $PHP_BIND $PHP_OPTIONS
 }
 stop () {
   start-stop-daemon --pidfile $PHP_PIDFILE -m --stop --oknodo -x $PHP_CGI --retry 5
