@@ -12,11 +12,13 @@ template "/opt/doat/apps/_common/Settings.local.php" do
   source "prod-apps-settings.php.erb"
   notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
   variables :sql => sql, :sql_credentials => sql_credentials, :app_config => app_config
+  mode "0644"
 end
 
 template ::File.join(node[:nginx][:conf_dir], "sites-enabled", "doat-flyapps") do
   source "nginx-flyapps.conf.erb"
   notifies :reload, "service[nginx]"
+  mode "0644"
 end
 
 nginx_site "doat-flyapps"

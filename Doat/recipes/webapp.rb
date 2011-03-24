@@ -16,16 +16,19 @@ template "/opt/doat/www/app/config/local.config.php" do
   source "webapp-local.config.php.erb"
   notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
   variables :sql => sql, :sql_credentials => sql_credentials, :app_config => app_config, :cores => cores
+  mode "0644"
 end
 
 template ::File.join(node[:nginx][:dir], "sites-enabled", "doat-webui") do
   source "nginx-webui.conf.erb"
   notifies :reload, "service[nginx]"
+  mode "0644"
 end
 
 template ::File.join(node[:nginx][:dir], "sites-enabled", "doat-developer") do
   source "nginx-developer.conf.erb"
   notifies :reload, "service[nginx]"
+  mode "0644"
 end
 
 nginx_site "doat-webui"

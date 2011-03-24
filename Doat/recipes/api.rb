@@ -7,11 +7,13 @@ end
 template "/opt/doat/www/gondor/services/doat/0.4/include/Settings.local.php" do
   source "api-Settings.local.php.erb"
   notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
+  mode "0644"
 end
 
 template ::File.join(node[:nginx][:dir], "sites-enabled", "doat-api") do
   source "nginx-api.conf.erb"
   notifies :reload, "service[nginx]"
+  mode "0644"
 end
 
 core_nodes = []
