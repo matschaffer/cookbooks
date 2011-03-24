@@ -3,6 +3,13 @@ package "libboost-system1.40.0"
 package "libboost-filesystem1.40.0"
 package "libevent-1.4-2"
 
+group node[:scribe][:group]
+
+user node[:scribe][:user] do
+  system true
+  group [:scribe][:group]
+end
+
 directory node[:scribe][:tmp_dir] do
   mode "0750"
   owner node[:scribe][:user]
