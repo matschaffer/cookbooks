@@ -4,6 +4,7 @@ server {
   root /opt/doat/www/app/webroot;
   error_log <%= node[:nginx][:log_dir] %>/www.doat.com_error.log;
   access_log <%= node[:nginx][:log_dir] %>/www.doat.com_access.log;
+  rewrite ^/min/([a-z]=.*) /min/index.php?$1 last;
   location ~ "\.svn" {
     deny all;
   }

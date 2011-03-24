@@ -1,4 +1,5 @@
 include_recipe "Doat::webserver_common"
+include_recipe "php::module_curl"
 
 ["www/app","www/libraries", "bin/#{node[:doat][:arch]}"].each do |component|
   doat_svn component
@@ -33,3 +34,6 @@ end
 
 nginx_site "doat-webui"
 nginx_site "doat-developer"
+nginx_site "default" do
+  enable false
+end
