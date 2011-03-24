@@ -92,4 +92,17 @@ if node[:doat][:core][:master]
   provide_service(:core_master)
 end
 
+# run the migrate script only once
+if node[:redis][:instances][:melt][:replication][:role] == "master"
+  execute "/opt/doat/Core/src/migrate.py" do
+    user "doat"
+    cwd "/opt/doat/Core/src/"
+    not_if { ::File.exists?("/etc/doat/migrate.lock") }
+    notifies :create, "file[/etc/doat/migrate.lock]"
+  end
+  file "/etc/doat/migrate.lock" do
+    action :nothing
+  end
+end
+
 provide_service(:core)
