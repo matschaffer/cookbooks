@@ -9,4 +9,5 @@ pre-start script
   mkdir -p <%= node[:scribe][:tmp_dir] %>
 end script
 
+env LD_LIBRARY_PATH=<%= ::File.dirname(node[:scribe][:daemon]) %>
 exec /sbin/start-stop-daemon --start --exec <%= node[:scribe][:daemon] %> -c <%= node[:scribe][:user] %> --pidfile /var/run/scribe-client.pid -- -c <%= @conf_file %>
