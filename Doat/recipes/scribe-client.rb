@@ -7,7 +7,7 @@ group node[:scribe][:group]
 
 user node[:scribe][:user] do
   system true
-  group [:scribe][:group]
+  group node[:scribe][:group]
 end
 
 directory node[:scribe][:tmp_dir] do

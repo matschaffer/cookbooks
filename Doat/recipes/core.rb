@@ -54,11 +54,13 @@ template "/etc/doat/core.conf" do
     :sql_credentials => sql_credentials, :sql => sql_host, :autocomplete_node => node,
     :app_config => app_config
   notifies :restart, "service[cored]"
+  mode "0644"
 end
 
 template "/etc/doat/autocomplete.conf" do
   source "autocomplete.conf.erb"
   notifies :restart, "service[autocompleted]"
+  mode "0644"
 end
 
 service "autocompleted" do
@@ -94,7 +96,7 @@ end
 
 # run the migrate script only once
 if node[:redis][:instances][:melt][:replication][:role] == "master"
-  execute "/opt/doat/Core/src/migrate.py" do
+  execute "/opt/doat/Core/src/migrate.py --conf /etc/doat/core.conf" do
     user "doat"
     cwd "/opt/doat/Core/src/"
     not_if { ::File.exists?("/etc/doat/migrate.lock") }
