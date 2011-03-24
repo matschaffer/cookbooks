@@ -4,7 +4,7 @@ include_recipe "Doat::webserver_common"
   doat_svn component
 end
 
-template "/opt/doat/www/gondor/services/doat/0.4/include/Setting.local.php" do
+template "/opt/doat/www/gondor/services/doat/0.4/include/Settings.local.php" do
   source "api-Settings.local.php.erb"
   notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
 end
