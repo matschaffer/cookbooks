@@ -3,6 +3,8 @@ package "libboost-system1.40.0"
 package "libboost-filesystem1.40.0"
 package "libevent-1.4-2"
 
+doat_svn "bin/#{node[:doat][:arch]}"
+
 group node[:scribe][:group]
 
 user node[:scribe][:user] do
