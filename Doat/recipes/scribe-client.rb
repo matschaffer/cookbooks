@@ -26,6 +26,8 @@ conf_file = ::File.join(node[:scribe][:conf_dir], "scribe-client.conf")
 template conf_file do
   source "scribe-client.conf.erb"
   variables :scribe => scribe
+  owner node[:scribe][:user]
+  mode "0644"
 end
 
 template "/etc/init/scribe-client.conf" do
