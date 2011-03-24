@@ -38,7 +38,7 @@ template "/etc/init/scribe-client.conf" do
 end
 
 service "scribe-client" do
-  action [:enable, :start]
+  action :enable
   running true
   provider ::Chef::Provider::Service::Upstart
 end

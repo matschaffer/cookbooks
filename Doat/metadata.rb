@@ -5,11 +5,6 @@ description      "Installs/Configures Doat"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1"
 
-depends          "subversion"
-depends          "cluster_service_discovery"
-depends          "redis"
-depends          "python"
-depends          "apt"
-depends          "php"
-depends          "nginx"
-depends          "pen"
+%w(aws subversion cluster_service_discovery redis python apt php nginx pen).each do |dep|
+  depends dep
+end

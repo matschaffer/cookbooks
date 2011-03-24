@@ -2,6 +2,7 @@ include_recipe "Doat"
 include_recipe "redis"
 include_recipe "Doat::scribe-client"
 include_recipe "python"
+include_recipe "aws"
 
 ["Core", "common", "bin/#{node[:doat][:arch]}", "melt"].each do |component|
   doat_svn component
@@ -53,24 +54,38 @@ template "/etc/doat/core.conf" do
   variables :redis_melt_master => redis_melt_master, :redis_melt_slave => node, :redis_search_node => node,
     :sql_credentials => sql_credentials, :sql => sql_host, :autocomplete_node => node,
     :app_config => app_config
-  notifies :restart, "service[cored]"
+  notifies :restart, "service[cored]", :immediately
   mode "0644"
 end
 
 template "/etc/doat/autocomplete.conf" do
   source "autocomplete.conf.erb"
-  notifies :restart, "service[autocompleted]"
+  notifies :restart, "service[autocompleted]", :immediately
   mode "0644"
 end
 
+s3_credentials = search(:credentials, "usage:s3 AND usage:doat-bootstrap").first
+aws_s3_file node[:doat][:autocompleted][:dump_file] do
+  aws_access_key_id s3_credentials[:access_key_id]
+  aws_secret_access_key s3_credentials[:secret_access_key]
+  bucket "doat-bootstrap"
+  key node[:doat][:autocompleted][:s3_dump_key]
+  owner "doat"
+  mode "0640"
+  notifies :restart, "service[autocompleted]", :immediately
+  action :create_if_missing
+end
+
 service "autocompleted" do
-  action [:start, :enable]
+  action :enable
+  running true
   supports :restart => false
   provider ::Chef::Provider::Service::Upstart
 end
 
 service "cored" do
-  action [:start, :enable]
+  action :enable
+  running true
   provider ::Chef::Provider::Service::Upstart
 end
 
