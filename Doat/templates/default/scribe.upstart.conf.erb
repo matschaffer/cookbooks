@@ -1,6 +1,7 @@
 author "Avishai Ish-Shalom <avishai@fewbytes.com>"
 description "Scribe logging daemon"
 
+start on (started networking)
 expect fork
 respawn
 respawn limit 5 15

@@ -89,6 +89,7 @@ if node[:doat][:core][:master]
     supports :restart => false
     provider ::Chef::Provider::Service::Upstart
   end
+  provide_service(:core_master)
 end
 
 provide_service(:core)
