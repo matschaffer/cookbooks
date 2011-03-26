@@ -77,12 +77,13 @@ aws_s3_file node[:doat][:autocompleted][:dump_file] do
 end
 
 service "autocompleted" do
+  restart_command "stop autocompleted; start autocompleted"
   action :enable
-  supports :restart => false
   provider ::Chef::Provider::Service::Upstart
 end
 
 service "cored" do
+  restart_command "stop cored; start cored"
   action :enable
   provider ::Chef::Provider::Service::Upstart
 end
@@ -101,7 +102,7 @@ if node[:doat][:core][:master]
 
   service "synqd" do
     action [:start, :enable]
-    supports :restart => false
+    restart_command "stop synqd; start synqd"
     provider ::Chef::Provider::Service::Upstart
   end
   provide_service(:core_master)

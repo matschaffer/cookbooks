@@ -30,14 +30,17 @@ template conf_file do
   variables :scribe => scribe
   owner node[:scribe][:user]
   mode "0644"
+  notifies :restart, "service[scribe-client]"
 end
 
 template "/etc/init/scribe-client.conf" do
   source "scribe.upstart.conf.erb"
   variables :conf_file => conf_file
+  notifies :restart, "service[scribe-client]"
 end
 
 service "scribe-client" do
   action :enable
   provider ::Chef::Provider::Service::Upstart
+  restart_command "stop scribe-client; start scribe-client"
 end
