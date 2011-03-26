@@ -78,14 +78,12 @@ end
 
 service "autocompleted" do
   action :enable
-  running true
   supports :restart => false
   provider ::Chef::Provider::Service::Upstart
 end
 
 service "cored" do
   action :enable
-  running true
   provider ::Chef::Provider::Service::Upstart
 end
 

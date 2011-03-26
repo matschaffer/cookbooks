@@ -39,6 +39,5 @@ end
 
 service "scribe-client" do
   action :enable
-  running true
   provider ::Chef::Provider::Service::Upstart
 end

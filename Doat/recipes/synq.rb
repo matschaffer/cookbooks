@@ -7,6 +7,5 @@ link "/etc/init.d/synqd" do
 end
 
 service "synqd" do
-  running true
   action [:enable, :start]
 end
