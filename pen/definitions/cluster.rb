@@ -1,5 +1,6 @@
 define :pen_cluster, :nodes => nil, :port => nil, :user => 'root',
   :timeout => 5, :check_interval => 60 do
+  include_recipe "pen"
   svc = "pen-#{params[:name]}"
 
   pen_nodes = params[:nodes].map do |n|
@@ -19,9 +20,8 @@ define :pen_cluster, :nodes => nil, :port => nil, :user => 'root',
   end
 
   service svc do
-    running :true
-    start_command "pen " + params[:nodes].join(" ")
     action :start
+    provider ::Chef::Provider::Service::Upstart
   end
 end
 
