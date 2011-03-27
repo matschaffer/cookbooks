@@ -51,7 +51,7 @@ remote_port=<%= @scribe[:scribe][:port] %>
 <secondary>
 type=file
 fs_type=std
-file_path=/tmp/scrie
+file_path=<%= node[:scribe][:tmp_dir] %>/store
 base_filename=doat
 max_size=3000000
 </secondary>
