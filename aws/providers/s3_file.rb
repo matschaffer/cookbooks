@@ -19,6 +19,7 @@ action :create do
       group f_group if f_group
       mode f_mode if f_mode
       backup new_resource.backup
+      action :nothing
     end
     f.run_action(:create)
     # verify file
