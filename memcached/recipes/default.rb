@@ -54,3 +54,4 @@ when "karmic"
     notifies :restart, resources(:service => "memcached"), :immediately
   end
 end
+provide_service("memcached")

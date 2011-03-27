@@ -5,6 +5,7 @@ description       "Installs memcached and provides a define to set up an instanc
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version           "0.10.4"
 depends           "runit"
+depends           "cluster_service_discovery"
 
 recipe "memcached", "Installs and configures memcached"
 
