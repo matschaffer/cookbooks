@@ -18,13 +18,19 @@
 # limitations under the License.
 #
 
-define :pear_module, :module => nil, :enable => true do
+define :pear_module, :enable => true do
   
   include_recipe "php::pear"
   
+  php_service = if node.recipe? "php::php5-cgi"
+    "service[php-cgi]"
+  else
+    "service[apache2]"
+  end
   if params[:enable]
-    execute "/usr/bin/pear install -a #{params[:module]}" do
-      only_if "/bin/sh -c '! /usr/bin/pear info #{params[:module]} 2>&1 1>/dev/null"
+    execute "/usr/bin/pear install -a #{params[:name]}" do
+      not_if "/usr/bin/pear info #{params[:name]}"
+      notifies :restart, php_service
     end
   end
   
