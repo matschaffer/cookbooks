@@ -40,7 +40,7 @@ template "/etc/init/scribe-client.conf" do
 end
 
 service "scribe-client" do
-  action :enable
+  action [:enable, :start]
   provider ::Chef::Provider::Service::Upstart
   restart_command "stop scribe-client; start scribe-client"
 end
