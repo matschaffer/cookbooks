@@ -18,13 +18,13 @@
 # limitations under the License.
 #
 
-define :pear_channel, :channel => nil, :enable => true do
+define :pear_channel, :enable => true do
   
   include_recipe "php::pear"
   
   if params[:enable]
-    execute "/usr/bin/pear channel-discover #{params[:channel]}" do
-      only_if "/bin/sh -c '! /usr/bin/pear/channel-info #{params[:channel]} 2>&1 1>/dev/null"
+    execute "/usr/bin/pear channel-discover #{params[:name]}" do
+      not_if "/usr/bin/pear channel-info #{params[:name]}"
     end
   end
   
