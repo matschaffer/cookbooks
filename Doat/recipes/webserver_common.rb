@@ -13,3 +13,6 @@ remote_directory ::File.join(node[:nginx][:dir], "ssl") do
   source "ssl"
   notifies :restart, "service[nginx]"
 end
+nginx_site "default" do
+  enable false
+end

@@ -11,6 +11,7 @@ server {
     set $app $1;
   }
   root /opt/doat/apps/$app;
+  index index.php;
 
   location ~* "/_" {
     deny all;

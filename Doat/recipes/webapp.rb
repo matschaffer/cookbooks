@@ -34,6 +34,3 @@ end
 
 nginx_site "doat-webui"
 nginx_site "doat-developer"
-nginx_site "default" do
-  enable false
-end
