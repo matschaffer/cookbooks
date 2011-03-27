@@ -47,7 +47,6 @@ end
 bash "install-pip" do
   cwd Chef::Config[:file_cache_path]
   code <<-EOH
-  curl -O http://python-distribute.org/distribute_setup.py
   python distribute_setup.py
   easy_install pip
   EOH
