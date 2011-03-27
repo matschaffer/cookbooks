@@ -13,8 +13,8 @@ action :create do
     f_owner = new_resource.owner
     f_group = new_resource.group
     f_mode = new_resource.mode
-    f = file new_resource.path do
-      content s3_key.data
+    f = remote_file new_resource.path do
+      source s3.interface.get_link(s3_key.bucket, s3_key.name, (Time.now + 300).strftime('%s'))
       owner f_owner if f_owner
       group f_group if f_group
       mode f_mode if f_mode
