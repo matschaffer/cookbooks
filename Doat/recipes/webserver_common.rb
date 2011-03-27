@@ -1,5 +1,6 @@
 include_recipe "Doat"
 include_recipe "nginx"
+include_recipe "php::module_curl"
 include_recipe "php::php5-cgi"
 include_recipe "Doat::scribe-client"
 

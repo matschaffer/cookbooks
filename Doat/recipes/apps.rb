@@ -1,4 +1,13 @@
 include_recipe "Doat::webserver_common"
+%w(channel://pear.php.net/Net_URL2-0.3.1
+   channel://pear.php.net/HTTP_Request2-2.0.0beta2
+   channel://pear.php.net/HTTP_OAuth-0.2.2
+   channel://pear.php.net/Services_Digg2-0.3.2
+  ).each do |pkg|
+  pear_module pkg do
+    enable true
+  end
+end
 
 %w(apps).each do |component|
   doat_svn component
