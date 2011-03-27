@@ -40,16 +40,17 @@ end
 # https://bitbucket.org/ianb/pip/issue/104/pip-uninstall-on-ubuntu-linux
 remote_file "#{Chef::Config[:file_cache_path]}/distribute_setup.py" do
   source "http://python-distribute.org/distribute_setup.py"
-  notifies :run, "bash[install-pip]", :immediately
+  notifies :run, "execute[python distribute_setup.py]", :immediately
   not_if "which pip"
 end
 
-bash "install-pip" do
+execute "python distribute_setup.py" do
   cwd Chef::Config[:file_cache_path]
-  code <<-EOH
-  python distribute_setup.py
-  easy_install pip
-  EOH
+  not_if "which pip"
+  notifies :install, "easy_install_package[pip]", :immediately
+end
+
+easy_install_package "pip" do
   not_if "which pip"
 end
 
