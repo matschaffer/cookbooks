@@ -1,9 +1,8 @@
 server {
   server_name api.doat.com api.prod.doat.com;
   listen 80;
-  listen 443 default ssl;
-  ssl_certificate <%= node[:nginx][:dir] %>/ssl/<%= node[:doat][:web][:ssl_certificate] %>;
-  ssl_certificate_key <%= node[:nginx][:dir] %>/ssl/<%= node[:doat][:web][:ssl_certificate_key] %>;
+  listen 81 default;
+  listen 443 default;
   root /opt/doat/www/gondor;
   error_log <%= node[:nginx][:log_dir] %>/api.doat.com_error.log;
   access_log <%= node[:nginx][:log_dir] %>/api.doat.com_access.log;

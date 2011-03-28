@@ -32,7 +32,7 @@ server {
 }
 
 server {
-  listen 80;
+  listen 80 default;
   server_name doat.com;
   rewrite ^/(.*) http://www.doat.com/$1 permanent;
 }

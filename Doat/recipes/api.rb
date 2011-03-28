@@ -1,5 +1,7 @@
 include_recipe "Doat::webserver_common"
 
+package "phpunit"
+
 ["www/app", "www/gondor", "www/libraries", "bin/#{node[:doat][:arch]}"].each do |component|
   doat_svn component
 end
