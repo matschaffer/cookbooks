@@ -10,6 +10,9 @@ server {
   if ($http_host ~ "^([^/.]+)\.flyapps.me") {
     set $app $1;
   }
+  if ($http_host ~ "^cdn[0-9]+\.flyapps.me") {
+    set $app "";
+  }
   root /opt/doat/apps/$app;
   index index.php index.html index.htm;
 

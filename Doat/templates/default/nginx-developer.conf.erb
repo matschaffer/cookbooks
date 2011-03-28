@@ -1,7 +1,7 @@
 server {
   server_name developer.doat.com;
   listen 80;
-  root /opt/doat/www/gondor;
+  root /opt/doat/developer;
   error_log <%= node[:nginx][:log_dir] %>/developer.doat.com_error.log;
   access_log <%= node[:nginx][:log_dir] %>/developer.doat.com_access.log;
   rewrite ^/min/([a-z]=.*) /min/index.php?$1 last;

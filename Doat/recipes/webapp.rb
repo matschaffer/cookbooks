@@ -1,7 +1,7 @@
 include_recipe "Doat::webserver_common"
 include_recipe "php::module_curl"
 
-["www/app","www/libraries", "bin/#{node[:doat][:arch]}"].each do |component|
+["www/app","www/libraries", "developer", "bin/#{node[:doat][:arch]}"].each do |component|
   doat_svn component
 end
 
