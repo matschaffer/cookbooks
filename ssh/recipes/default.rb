@@ -12,7 +12,7 @@ end
 admin_keys=[]
 search("users", "groups:admins AND ssh_public_key").each do |user|
   if user[:groups].include? "admins"
-    admin_keys << user[:ssh_public_key]
+    admin_keys << user['ssh_public_key']
   end
 end
 ruby_block "Manage root's authorized_keys" do
