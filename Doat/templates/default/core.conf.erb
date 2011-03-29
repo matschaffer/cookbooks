@@ -17,6 +17,11 @@ sql_password = <%= @sql_credentials[:password] %>
 sql_db = <%= @app_config["db"] %>
 sql_port = <%= @sql["mysql"]["port"] %>
 
+### geodis ###
+geodis_redis_host = <%= @redis_geodis_node[:ipaddress] %>
+geodis_redis_port = <%= @redis_geodis_node[:redis][:instances][:geodis][:port] %>
+geodis_redis_db   = <%= @redis_geodis_node[:redis][:core][:geodis][:redis_db] %>
+
 ### classifier ###
 search_redis_host = <%= @redis_search_node[:ipaddress] %>
 search_redis_port = <%= @redis_search_node[:redis][:instances][:search][:port] %>

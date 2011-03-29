@@ -16,12 +16,12 @@ end
   easy_install_package pkg
 end
 
-master_node = provider_for_service("redis_melt", :service_filters => {:replication => "master"})
-Chef::Log.info "redis_search replication role: #{node[:redis][:instances][:melt][:replication][:role]}"
+redis_melt_master = provider_for_service("redis_melt", :service_filters => {:replication => "master"}) \
+  if node[:redis][:instances][:melt][:replication][:role] == "slave"
 redis_instance "melt" do
   data_dir "/var/lib/redis/melt"
   port 6378
-  master master_node if node[:redis][:instances][:melt][:replication][:role] == "slave"
+  master redis_melt_master if node[:redis][:instances][:melt][:replication][:role] == "slave"
 end
 
 master_node = provider_for_service("redis_search", :service_filters => {:replication => "master"})
@@ -47,9 +47,8 @@ end
 
 if node[:redis][:instances][:melt][:replication][:role] == "master"
   redis_melt_master = node
-else
-  redis_melt_master = provider_for_service(:redis_melt, :filters => {:replication => "master"})
 end
+redis_geodis_node = provider_for_service(:redis_geodis)
 app_config = data_bag_item(:doat_config, :core)
 sql_host = search(:endpoints, "type:rds AND db:#{app_config["db"]}").first
 sql_credentials = search(:credentials, "usage:db_#{app_config["db"]}").first
@@ -58,7 +57,7 @@ template "/etc/doat/core.conf" do
   source "core.conf.erb"
   variables :redis_melt_master => redis_melt_master, :redis_melt_slave => node, :redis_search_node => node,
     :sql_credentials => sql_credentials, :sql => sql_host, :autocomplete_node => node,
-    :app_config => app_config
+    :app_config => app_config, :redis_geodis_node => redis_geodis_node
   notifies :restart, "service[cored]", :immediately
   mode "0644"
 end
