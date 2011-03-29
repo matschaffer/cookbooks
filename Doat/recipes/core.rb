@@ -16,14 +16,19 @@ end
   easy_install_package pkg
 end
 
+master_node = provider_for_service("redis_melt", :service_filters => {:replication => "master"})
+Chef::Log.info "redis_search replication role: #{node[:redis][:instances][:melt][:replication][:role]}"
 redis_instance "melt" do
   data_dir "/var/lib/redis/melt"
   port 6378
+  master master_node if node[:redis][:instances][:melt][:replication][:role] == "slave"
 end
 
+master_node = provider_for_service("redis_search", :service_filters => {:replication => "master"})
 redis_instance "search" do
   data_dir "/var/lib/redis/search"
   port 6379
+  master master_node
 end
 
 directory "/opt/doat/data" do
