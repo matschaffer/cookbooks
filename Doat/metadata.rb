@@ -6,6 +6,6 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1"
 supports         "ubuntu", ">= 10.04"
 
-%w(aws subversion cluster_service_discovery redis python apt php nginx pen).each do |dep|
+%w(aws subversion git cluster_service_discovery redis python apt php nginx pen).each do |dep|
   depends dep
 end

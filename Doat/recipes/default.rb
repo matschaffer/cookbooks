@@ -35,11 +35,13 @@ end
 group "doat"
 
 directory "/etc/doat" do
-  mode "0755"
+  mode "0775"
+  group "doat"
 end
 
 directory "/var/log/doat" do
   mode "0777"
+  owner "doat"
 end
 
 directory "/var/run/doat" do
