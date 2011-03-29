@@ -2,8 +2,14 @@
 #
 include_recipe "Doat"
 
-link "/etc/init.d/synqd" do
-  to "/opt/doat/etc/servers/core/init.d/synqd"
+cookbook_file "/etc/init/synqd.conf" do
+  source "synqd.upstart.conf"
+end
+
+template "/etc/doat/synq.py" do
+  source "synq.config.erb"
+  mode "0644"
+  notifies :restart, "service[synqd]"
 end
 
 service "synqd" do
