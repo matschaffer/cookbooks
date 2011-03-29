@@ -1,0 +1,16 @@
+# amazon SNS #
+#sns_service_url = '<%= node[:doat][:maintenance][:sns_url] %>'
+aws_public_key = "<%= credentials["access_key_id"] %>"
+aws_private_key = "<%= credentials["secret_access_key"] %>"
+
+sns_topic_arn = '<%= node[:doat][:maintenance][:topic_arn] %>'
+
+httpd_port = <%= node[:doat][:maintenance][:port] %>
+default_hostname = '<%= node[:ec2][:public_hostname] %>'
+log_file = '/var/log/doat/maintenanced.log'
+
+pidfile = '/var/run/doat/maintenanced.pid'
+node_id = '<%= node.name %>'
+
+# set server services here (core, etc.)
+services = []
