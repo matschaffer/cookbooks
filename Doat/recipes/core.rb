@@ -4,7 +4,7 @@ include_recipe "Doat::scribe-client"
 include_recipe "python"
 include_recipe "aws"
 
-["Core", "common", "bin/#{node[:doat][:arch]}", "melt"].each do |component|
+["Core", "common", "bin/#{node[:doat][:arch]}", "melt", "geodis"].each do |component|
   doat_svn component
 end
 
@@ -12,7 +12,7 @@ end
   package pkg
 end
 
-%w(PySQLPool redis hiredis).each do |pkg|
+%w(PySQLPool redis hiredis geohasher).each do |pkg|
   easy_install_package pkg
 end
 
