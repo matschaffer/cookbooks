@@ -1,8 +1,10 @@
 = DESCRIPTION:
+Manage sshd configuration, authorized_keys, etc.
 
 = REQUIREMENTS:
 
 = ATTRIBUTES:
+ssh.admin_groups = Users belonging to these groups will have their ssh keys installed in /root/.ssh/authorized_keys, defaults to ["admins"]
 
 = USAGE:
 

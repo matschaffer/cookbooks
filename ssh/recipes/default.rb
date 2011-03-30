@@ -9,15 +9,24 @@ service "ssh" do
   action [:start, :enable]
 end
 
-admin_keys=[]
-search("users", "groups:admins AND ssh_public_key:[* TO *]").each do |user|
-  admin_keys << user['ssh_public_key']
+admin_keys = []
+users = []
+admin_groups = node[:ssh][:admin_groups] || [ "admins" ]
+admin_groups_query = admin_groups.map do |grp|
+  "groups:#{grp}"
+end.join(" OR ")
+search("users", "(#{admin_groups_query}) AND ssh_public_key:[* TO *]").each do |user|
+  admin_keys.push user['ssh_public_key'].chomp
+  users.push user['id']
 end
+Chef::Log.info "Adding SSH keys for #{users.join(", ")}" if users.any?
 ruby_block "Manage root's authorized_keys" do
   block do
     ::File.open("/root/.ssh/authorized_keys", "a+") do |f|
       keys_to_add = admin_keys - f.readlines
-      f.write keys_to_add.join("\n") unless keys_to_add.empty?
+      keys_to_add.each do |public_key|
+        f.puts public_key
+      end
     end
   end
 end
