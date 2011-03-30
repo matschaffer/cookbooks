@@ -33,6 +33,7 @@ default[:nagios][:group]      = "nagios"
 default[:nagios][:notifications_enabled]   = 0
 default[:nagios][:check_external_commands] = true
 default[:nagios][:default_contact_groups]  = %w(admins)
+default[:nagios][:contact_groups]          = []
 default[:nagios][:sysadmin_email]          = "root@localhost"
 default[:nagios][:sysadmin_sms_email]      = "root@localhost"
 default[:nagios][:server_auth_method]      = "openid"

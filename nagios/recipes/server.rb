@@ -25,7 +25,7 @@ include_recipe "apache2::mod_ssl"
 include_recipe "apache2::mod_rewrite"
 include_recipe "nagios::client"
 
-contacts = search(:users, "groups:(#{node[:nagios][:contact_groups].join(" ")})")
+contacts = search(:users, "groups:(#{(node[:nagios][:contact_groups] + node[:nagios][:default_contact_groups]).join(" ")})")
 nodes = search(:node, "hostname:[* TO *] AND cluster_environment:#{node[:cluster][:environment]} AND nagios_monitored:true")
 default_gw = `route -n | grep ^0.0.0.0 | awk \'{print \$2}\'`
 groups = contacts.map{|c| c['groups']}.flatten.uniq
