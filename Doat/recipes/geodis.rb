@@ -4,7 +4,7 @@ include_recipe "git"
 
 redis_instance "geodis" 
 package "unzip"
-%w(redis hiredis geohasher).each do |pkg|
+%w(redis hiredis geohasher python-geohash).each do |pkg|
   easy_install_package pkg
 end
 

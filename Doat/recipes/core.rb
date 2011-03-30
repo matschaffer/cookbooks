@@ -8,7 +8,7 @@ include_recipe "aws"
   doat_svn component
 end
 
-%w(python-crypto python-nltk python-mysqldb python-enchant).each do |pkg|
+%w(python-crypto python-nltk python-mysqldb python-enchant python-geohash).each do |pkg|
   package pkg
 end
 
