@@ -1,29 +1,29 @@
 {
+  "name": "ssh",
+  "description": "Installs/Configures ssh",
+  "long_description": "= DESCRIPTION:\nManage sshd configuration, authorized_keys, etc.\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\nssh.admin_groups = Users belonging to these groups will have their ssh keys installed in /root/.ssh/authorized_keys, defaults to [\"admins\"]\n\n= USAGE:\n\n",
+  "maintainer": "YOUR_COMPANY_NAME",
   "maintainer_email": "YOUR_EMAIL",
-  "groupings": {
-  },
-  "attributes": {
-  },
-  "recommendations": {
+  "license": "All rights reserved",
+  "platforms": {
   },
   "dependencies": {
+  },
+  "recommendations": {
   },
   "suggestions": {
   },
   "conflicting": {
   },
-  "license": "All rights reserved",
-  "platforms": {
-  },
-  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\n\n= USAGE:\n\n",
-  "version": "0.0.1",
   "providing": {
-  },
-  "name": "ssh",
-  "maintainer": "YOUR_COMPANY_NAME",
-  "recipes": {
   },
   "replacing": {
   },
-  "description": "Installs/Configures ssh"
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.0.1"
 }

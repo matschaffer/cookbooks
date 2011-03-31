@@ -1,34 +1,4 @@
-define serviceescalation {
-  host_name www.anyclip.com
-  service_description *
-  contact_groups <%=node[:nagios][:default_contact_groups].map{|g| g + "-sms"}.join(',')%>,webui-admins-sms
-  notification_interval 180
-  first_notification 2
-  last_notification 3
-}
-define serviceescalation {
-  host_name apis.anyclip.com
-  service_description *
-  contact_groups <%=node[:nagios][:default_contact_groups].map{|g| g + "-sms"}.join(',')%>,api-admins-sms
-  notification_interval 180
-  first_notification 2
-  last_notification 3
-}
-define hostescalation {
-  host_name www.anyclip.com
-  contact_groups <%=node[:nagios][:default_contact_groups].map{|g| g + "-sms"}.join(',')%>,webui-admins-sms
-  notification_interval 180
-  first_notification 2
-  last_notification 3
-}
-define hostescalation {
-  host_name apis.anyclip.com
-  contact_groups <%=node[:nagios][:default_contact_groups].map{|g| g + "-sms"}.join(',')%>,api-admins-sms
-  notification_interval 180
-  first_notification 2
-  last_notification 3
-}
-
+<% if @external %>
 define serviceescalation {
   hostgroups external
   service_description *
@@ -45,6 +15,7 @@ define hostescalation {
   first_notification 4
   last_notification 0
 }
+<% end %>
 
 define serviceescalation {
   hostgroups all,!external,!routers

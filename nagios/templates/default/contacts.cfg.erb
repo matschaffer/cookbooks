@@ -27,7 +27,7 @@ define contact {
   use          default-contact
   contactgroups <%= c[:groups].join(',') %>
 }
-<% if c.has_key?('pager') %>
+<% if c.has_key?('pager') and node[:nagios].has_key?(:sms) %>
 define contact {
   contact_name <%= c['id'] %>-sms
   email        <%= c['email'] %>

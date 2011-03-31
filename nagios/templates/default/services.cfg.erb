@@ -12,7 +12,7 @@ define service {
 # monitoring service checks
 define service {
     service_description Nagios
-    hostgroup_name      monitoring
+    hostgroup_name      monitor
     check_command       check-nagios
     contact_groups      admins
     use                 default-service
@@ -35,9 +35,10 @@ define service {
 #    use                 default-service
 #}
 #
+<% unless @service_hosts['managed-node'].nil? %>
 define service {
     service_description chef-client run status
-    hostgroup_name      chef-client
+    hostgroup_name      managed-node
     use                 default-service
     freshness_threshold 720
     active_checks_enabled 0
@@ -46,6 +47,7 @@ define service {
     is_volatile            1
 }
 
+<% end %>
 define service {
     service_description Free Space All Disks
     hostgroup_name      all,!external,!routers

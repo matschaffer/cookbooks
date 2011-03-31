@@ -131,7 +131,9 @@ apache_site "nagios3.conf"
 end
 
 %w{ commands templates timeperiods escalations}.each do |conf|
-  nagios_conf conf
+  nagios_conf conf do
+    variables :external => false
+  end
 end
 
 nagios_conf "services" do
