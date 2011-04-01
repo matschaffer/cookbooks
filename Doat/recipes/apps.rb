@@ -25,7 +25,7 @@ template "/opt/doat/apps/_common/Settings.local.php" do
   mode "0644"
 end
 
-template ::File.join(node[:nginx][:dir], "sites-enabled", "doat-apps") do
+template ::File.join(node[:nginx][:dir], "sites-available", "doat-apps") do
   source "nginx-apps.conf.erb"
   notifies :reload, "service[nginx]"
   mode "0644"

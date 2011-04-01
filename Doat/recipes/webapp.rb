@@ -20,13 +20,13 @@ template "/opt/doat/www/app/config/local.config.php" do
   mode "0644"
 end
 
-template ::File.join(node[:nginx][:dir], "sites-enabled", "doat-webui") do
+template ::File.join(node[:nginx][:dir], "sites-available", "doat-webui") do
   source "nginx-webui.conf.erb"
   notifies :reload, "service[nginx]"
   mode "0644"
 end
 
-template ::File.join(node[:nginx][:dir], "sites-enabled", "doat-developer") do
+template ::File.join(node[:nginx][:dir], "sites-available", "doat-developer") do
   source "nginx-developer.conf.erb"
   notifies :reload, "service[nginx]"
   mode "0644"

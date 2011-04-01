@@ -12,7 +12,7 @@ template "/opt/doat/www/gondor/services/doat/0.4/include/Settings.local.php" do
   mode "0644"
 end
 
-template ::File.join(node[:nginx][:dir], "sites-enabled", "doat-api") do
+template ::File.join(node[:nginx][:dir], "sites-available", "doat-api") do
   source "nginx-api.conf.erb"
   notifies :reload, "service[nginx]"
   mode "0644"
