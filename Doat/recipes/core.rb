@@ -96,10 +96,11 @@ end
 
 if node[:doat][:core][:type] == "master"
   template "/etc/doat/synq.conf" do
-    source "synqd.conf.erb"
+    source "synqd.config.erb"
     mode "0644"
     owner "doat"
     notifies :restart, "service[synqd]"
+    variables :sql_credentials => sql_credentials, :sql => sql_host
   end
 
   cookbook_file "/etc/init/synqd.conf" do
