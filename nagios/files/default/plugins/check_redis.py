@@ -14,29 +14,37 @@ def parse_options():
     parser.add_option("-H", "--host", help="The HOST to check",
             metavar="HOST", dest="host")
     parser.add_option("-w", "--warning", help="The WARNING response time threshold",
-            metavar="WARNING", dest="warning", type=int)
+            metavar="WARNING", dest="warning", type=float)
     parser.add_option("-c", "--critical", help="The CRITICAL response time threshold",
-            metavar="CRITICAL", dest="critical", type=int)
-    parser.add_option("-p", "--port", help="The Memcache PORT on the host",
-            metavar="PORT", dest="port", default=11211, type=int)
+            metavar="CRITICAL", dest="critical", type=float)
+    parser.add_option("-p", "--port", help="Redis PORT on the host",
+            metavar="PORT", dest="port", default=6379, type=int)
+    parser.add_option("-C", "--critical-concurrent", help="The CRITICAL value of concurrent clients",
+            metavar="CRITICAL", dest="crit_concurrent", type=int)
+    parser.add_option("-W", "--warning-concurrent", help="The WARNING value of concurrent clients",
+            metavar="WARNING", dest="warn_concurrent", type=int)
     (options, args) = parser.parse_args()
     for opt in required_options:
         if not getattr(options, opt):
             parser.error('Required argument %s missing' % opt)
     return options
 
-def check_memcache(options):
+def check_redis(options):
     timestamp = time.time()
-    mc = memcache(host=options.host, port=options.port, timeout=options.critical)
-    stats = mc.stats()
+    rd = redis(host=options.host, port=options.port, timeout=options.critical)
+    stats = rd.stats()
     conn_time = time.time() - timestamp
-    if conn_time > options.warning:
-        die(NAGIOS_WARN, "Connection time was %d" % conn_time)
     if conn_time > options.critical:
-        die(NAGIOS_FAIL, "Connection time was %d" % conn_time)
+        die(NAGIOS_FAIL, "FAIL: Connection time was %f" % conn_time)
+    if conn_time > options.warning:
+        die(NAGIOS_WARN, "WARN: Connection time was %f" % conn_time)
+    if options.crit_concurrent and int(stats["connected_clients"]) > options.crit_concurrent:
+        die(NAGIOS_FAIL, "FAIL: Concurrent client connections: %s" % stats["connected_clients"])
+    if options.warn_concurrent and int(stats["connected_clients"]) > options.warn_concurrent:
+        die(NAGIOS_WARN, "WARN Concurrent client connections: %s" % stats["connected_clients"])
 
-    status = "OK | %s\n" % [s for s in  stats if s.startswith('total_items')][0]
-    status += ("|" + "\n".join(stats))
+    status = "OK | connection_time:%f\n" % conn_time
+    status += ("|" + "\n".join(map(lambda tup: "=".join(tup), stats.items() )))
     die(NAGIOS_OK, status)
 
 def die(err_code, msg):
@@ -44,6 +52,7 @@ def die(err_code, msg):
     exit(err_code)
 
 def try_or_die(func):
+    "A decorator function that will try the function and die on failure"
     def try_func(self, *arg):
         try:
             resp = func(self, *arg)
@@ -52,12 +61,12 @@ def try_or_die(func):
         except (socket.herror, socket.gaierror) as host_error:
             die(NAGIOS_UNKNOWN, "Hostname error? %s" % host_error)
         except Exception as e:
-            die(NAGIOS_UNKNOWN, "Unknown error occurred: %s" % e)
+            die(NAGIOS_UNKNOWN, "Unknown error occurred in %s: %s" % (func.__name__, e))
         return resp
     return try_func
 
 
-class memcache(object):
+class redis(object):
     def __init__(self, host, port, timeout=30):
         self.port = port
         self.host = host
@@ -74,13 +83,13 @@ class memcache(object):
 
     @try_or_die
     def stats(self):
-        self.sock.sendall("stats\r\n")
+        self.sock.sendall("INFO\r\n")
         resp = self.sock.recv(4096)
-        resp = resp.replace('STAT ', '').splitlines()
-        resp.remove('END')
-        resp = map(lambda s: s.replace(' ', "="), resp)
-        return resp
+        resp = resp.splitlines()
+        del(resp[0])
+        response = dict([line.split(':') for line in resp])
+        return response
 
 if __name__ == "__main__":
     options = parse_options()
-    check_memcache(options)
+    check_redis(options)

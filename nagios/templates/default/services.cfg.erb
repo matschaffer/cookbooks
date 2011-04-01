@@ -12,7 +12,7 @@ define service {
 # monitoring service checks
 define service {
     service_description Nagios
-    hostgroup_name      monitor
+    hostgroup_name      monitoring
     check_command       check-nagios
     contact_groups      admins
     use                 default-service
@@ -35,6 +35,31 @@ define service {
 #    use                 default-service
 #}
 #
+<% unless @service_hosts['core'].nil? %>
+define service {
+    service_description redis search
+    use                 default-service
+    hostgroup_name      core
+    check_command       check_redis_concurrents!6379!200!600
+}
+
+define service {
+    service_description redis melt
+    use                 default-service
+    hostgroup_name      core
+    check_command       check_redis_concurrents!6378!200!600
+}
+
+<% end %>
+<% unless @service_hosts['geodis'].nil? %>
+define service {
+    service_description redis geodis
+    use                 default-service
+    hostgroup_name      geodis
+    check_command       check_redis_concurrents!6379!200!600
+}
+
+<% end %>
 <% unless @service_hosts['managed-node'].nil? %>
 define service {
     service_description chef-client run status
@@ -111,25 +136,25 @@ define service {
   }
   <% end -%>
 <% end -%>
-<% unless @service_hosts['webui-webservers'].nil? -%>
+<% unless @service_hosts['web'].nil? -%>
 # basic web server http check
 define service {
-    service_description HTTP WebUI
-    hostgroup_name      webui-webservers
-    check_command	check_http_content!www.anyclip.com!/movies/recent!Recently added movies
+    service_description HTTP WebUI and API port 80
+    hostgroup_name      web
+    check_command	      check_http
     use                 default-service
-    contact_groups      webui-admins,<%=node[:nagios][:default_contact_groups].join(',')%>
+    contact_groups      <%=node[:nagios][:default_contact_groups].join(',')%>
 }
 
 <% end -%>
-<% unless @service_hosts['api-appservers'].nil? -%>
+<% unless @service_hosts['apps'].nil? -%>
 # basic check if appserver role is running unicorn
 define service {
-    service_description Tomcat API
-    hostgroup_name      api-appservers
-    check_command	check_http_content_port!apis.anyclip.com!8080!'/api/title/tWyTmZx3x/?cid=C9DX7VqQ&format=JSON&sig=66260cdf934b4157c7e5420bbe80f9a4f3f53878'!where-in-the-world-is-osama-bin-laden
+    service_description Flyapps
+    hostgroup_name      apps
+    check_command	      check_http
     use                 default-service
-    contact_groups      api-admins,<%=node[:nagios][:default_contact_groups].join(',')%>
+    contact_groups      <%=node[:nagios][:default_contact_groups].join(',')%>
 }
 
 <% end -%>

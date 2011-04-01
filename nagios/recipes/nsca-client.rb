@@ -3,7 +3,7 @@
 package "nsca"
 
 service "nsca" do
-  action :disable, :stop unless node.recipe? "nagios::nsca-server"
+  action [:disable, :stop] unless node.recipe? "nagios::nsca-server"
 end
 
 server = provider_for_service("nsca")

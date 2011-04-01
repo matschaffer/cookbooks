@@ -27,13 +27,14 @@ mon_host = Array.new
 if node.run_list.roles.include?(node[:nagios][:server_role])
   mon_host << node[:ipaddress]
 else
-  all_providers_for_service("monitoring") do |n|
+  all_providers_for_service("monitoring").each do |n|
     mon_host << n['ipaddress']
   end
 end
 if node.nagios.attribute? :external_monitors
   mon_host += node[:nagios][:external_monitors]
 end
+Chef::Log.info "NRPE server whitelisted monitors: #{mon_host.join(", ")}"
 
 gem_package "choice"
 
@@ -47,7 +48,7 @@ gem_package "choice"
 end
 
 service "nagios-nrpe-server" do
-  action :enable
+  action [:enable, :start]
   supports :restart => true, :reload => true
 end
 
