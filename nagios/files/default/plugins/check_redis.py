@@ -87,7 +87,7 @@ class redis(object):
         resp = self.sock.recv(4096)
         resp = resp.splitlines()
         del(resp[0])
-        response = dict([line.split(':') for line in resp])
+        response = dict([line.split(':', 1) for line in resp if line.find(':') >= 0])
         return response
 
 if __name__ == "__main__":
