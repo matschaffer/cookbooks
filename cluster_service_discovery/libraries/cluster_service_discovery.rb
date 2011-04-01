@@ -61,7 +61,7 @@ module ClusterServiceDiscovery
   # given above.  If fewer servers are available than requested, even
   # after violating the above constraints, then we give up and return
   # the most we can.
-  def all_providers_for_service service_name, options={}
+  def all_providers_for_service service_name, options={}, &block
     Chef::Log.debug("Looking up providers for #{service_name} given #{options.inspect}")
     # set the horizon
     horizon = case
@@ -114,7 +114,13 @@ module ClusterServiceDiscovery
 
     # return sorted servers
     Chef::Log.debug("About to return #{servers_after_horizon.count} service providers")
-    servers_after_horizon.sort_by { |server| server[:cluster][:services][service_name]['timestamp'] }
+    servers_final = servers_after_horizon.sort_by { |server| server[:cluster][:services][service_name]['timestamp'] }
+    if block
+      servers_final.each {|n| block.call(n) unless n.nil? }
+      true
+    else
+      servers_final
+    end
   end
 
   # Find the most recent node that registered to provide the given service
