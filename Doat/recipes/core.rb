@@ -8,11 +8,11 @@ include_recipe "aws"
   doat_svn component
 end
 
-%w(python-crypto python-nltk python-mysqldb python-enchant python-geohash).each do |pkg|
+%w(python-crypto python-nltk python-mysqldb python-enchant).each do |pkg|
   package pkg
 end
 
-%w(PySQLPool redis hiredis geohasher).each do |pkg|
+%w(PySQLPool redis hiredis geohasher python-geohash).each do |pkg|
   easy_install_package pkg
 end
 
@@ -24,7 +24,9 @@ redis_instance "melt" do
   master redis_melt_master if node[:redis][:instances][:melt][:replication][:role] == "slave"
 end
 
-master_node = provider_for_service("redis_search", :service_filters => {:replication => "master"})
+filters = {:replication => "master"}
+filters[:replication_level] = 0 if node[:doat][:core][:type] == "master"
+master_node = provider_for_service("redis_search", :service_filters => filters )
 redis_instance "search" do
   data_dir "/var/lib/redis/search"
   port 6379
@@ -92,7 +94,7 @@ service "cored" do
   provider ::Chef::Provider::Service::Upstart
 end
 
-if node[:doat][:core][:master]
+if node[:doat][:core][:type] == "master"
   template "/etc/doat/synq.conf" do
     source "synqd.conf.erb"
     mode "0644"
