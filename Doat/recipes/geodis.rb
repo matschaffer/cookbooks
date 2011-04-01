@@ -9,7 +9,7 @@ package "unzip"
 end
 
 git "/opt/doat/geodis" do
-  repository "git://github.com/doat/geodis.git"
+  repository node[:doat][:geodis][:repo_url]
   user "doat"
   action :sync
 end
