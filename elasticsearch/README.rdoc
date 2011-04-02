@@ -1,0 +1,9 @@
+= DESCRIPTION:
+Elastic search is a Lucene based search server. This cookbook installs and configures it.
+
+= REQUIREMENTS:
+
+= ATTRIBUTES:
+
+= USAGE:
+

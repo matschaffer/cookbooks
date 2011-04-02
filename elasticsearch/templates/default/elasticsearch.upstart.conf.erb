@@ -1,0 +1,10 @@
+author avishai@fewbytes.com
+description ElasticSearch upstart job
+
+respawn
+respawn limit 5 15
+expect fork
+script
+  . <% @init_config_file %>
+  su -c '<%= node[:elasticsearch][:inst_dir] %>/bin/elasticsearch $DAEMON_OPTS' <%= node[:elasticsearch][:user] %>
+end script

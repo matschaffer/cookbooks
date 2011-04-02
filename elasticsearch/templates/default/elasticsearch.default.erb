@@ -1,0 +1,4 @@
+DAEMON_ARGS="-Des.config=<%= node[:elasticsearch][:conf_dir] %>/elasticsearch.json"
+DAEMON_ARGS="$DAEMON_ARGS -p <%= node[:elasticsearch][:pid_dir] %>/$NAME.pid"
+ES_MAX_MEM="<%= node[:elasticsearch][:java][:max_memory] %>"
+ES_MIN_MEM="<%= node[:elasticsearch][:java][:min_memory] %>"

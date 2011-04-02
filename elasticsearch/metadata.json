@@ -1,0 +1,35 @@
+{
+  "name": "elasticsearch",
+  "description": "Installs/Configures elasticsearch",
+  "long_description": "= DESCRIPTION:\nElastic search is a Lucene based search server. This cookbook installs and configures it.\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\n\n= USAGE:\n\n",
+  "maintainer": "FewBytes technologies LTD",
+  "maintainer_email": "avishai@fewbytes.com",
+  "license": "All rights reserved",
+  "platforms": {
+  },
+  "dependencies": {
+    "java": [
+
+    ],
+    "cluster_service_discovery": [
+
+    ]
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.0.1"
+}
