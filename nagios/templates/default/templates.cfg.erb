@@ -56,12 +56,22 @@ define host {
   use                     server
   initial_state           o
   active_checks_enabled   0
+  register                0
 }
 
 define host {
   name                    rackspace-host
   use                     server
   initial_state           o
+  register                0
+}
+
+define host {
+  name                    external-host
+  use                     server
+  initial_state           o
+  register                0
+  hostgroups              external
 }
 
 define host {
@@ -89,8 +99,11 @@ define service {
   event_handler_enabled           1
   flap_detection_enabled          1
   failure_prediction_enabled      1
-#  process_perf_data               1
+<% if node[:nagios][:nagiosgrapher][:enabled] %>
+  process_perf_data               1
+<% else %>
   process_perf_data               0
+<% end %>
   retain_status_information       1
   retain_nonstatus_information    1
   is_volatile                     0
@@ -102,5 +115,11 @@ define service {
   notification_options            w,u,c,r
   notification_interval           <%= nagios_interval(nagios_attr(:default_service)[:notification_interval]) %>
   notification_period             24x7
+  register                        0
+}
+
+define service {
+  name                            external-service
+  use                             default-service
   register                        0
 }

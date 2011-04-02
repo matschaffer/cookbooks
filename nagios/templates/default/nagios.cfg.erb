@@ -92,7 +92,12 @@ enable_notifications=<%= node[:nagios][:notifications_enabled] %>
 enable_event_handlers=1
 
 #process_performance_data=1
+<% if node[:nagios][:nagiosgrapher][:enabled] %>
+process_performance_data=1
+service_perfdata_command=ngraph-process-service-perfdata-pipe
+<% else %>
 process_performance_data=0
+<% end %>
 
 #service_perfdata_command=ngraph-process-service-perfdata-pipe
 #host_perfdata_command=process-host-perfdata
