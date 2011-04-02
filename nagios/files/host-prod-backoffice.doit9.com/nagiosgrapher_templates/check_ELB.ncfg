@@ -1,0 +1,21 @@
+define ngraph{
+	service_name            .*ELB
+        graph_perf_regex        time=\s*([0-9\.,]+)
+        graph_value             http_res
+        graph_units             seconds
+        graph_legend            HTTP response time
+        rrd_plottype            AREA
+        rrd_color               c0c0ff
+}
+
+define ngraph{
+        service_name            .*ELB
+        type                    CDEF
+        graph_value             http_cdef
+        graph_units
+        graph_legend
+        graph_calc              http_res
+        rrd_plottype            LINE1
+        rrd_color               000000
+}
+
