@@ -6,6 +6,7 @@ define ngraph{
         graph_legend            HTTP response time
         rrd_plottype            AREA
         rrd_color               c0c0ff
+	step			120
 }
 
 define ngraph{
