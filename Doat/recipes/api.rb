@@ -3,20 +3,21 @@ include_recipe "Doat::webserver_common"
 package "phpunit"
 package "php5-thrift"
 
-["www/app", "www/gondor", "www/libraries", "bin/#{node[:doat][:arch]}"].each do |component|
-  doat_svn component
-end
+doat_svn "bin/#{node[:doat][:arch]}"
+
 
 link "/etc/php5/conf.d/thrift.ini" do
   to "/etc/php.d/thrift_protocol.ini"
   notifies :restart, "service[php-cgi]"
 end
 
-template "/opt/doat/www/gondor/services/doat/0.4/include/Settings.local.php" do
+template "/etc/doat/api.settings.local.php" do
   source "api-Settings.local.php.erb"
   notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
   mode "0644"
 end
+
+doat_module "api"
 
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-api") do
   source "nginx-api.conf.erb"

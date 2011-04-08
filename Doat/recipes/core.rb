@@ -4,9 +4,7 @@ include_recipe "Doat::scribe-client"
 include_recipe "python"
 include_recipe "aws"
 
-["Core", "common", "bin/#{node[:doat][:arch]}", "melt", "geodis"].each do |component|
-  doat_svn component
-end
+doat_svn "bin/#{node[:doat][:arch]}"
 
 %w(python-crypto python-nltk python-mysqldb python-enchant).each do |pkg|
   package pkg
@@ -64,6 +62,8 @@ template "/etc/doat/core.conf" do
   mode "0644"
 end
 
+doat_module "core"
+
 template "/etc/doat/autocomplete.conf" do
   source "autocomplete.conf.erb"
   notifies :restart, "service[autocompleted]", :immediately
@@ -94,32 +94,13 @@ service "cored" do
   provider ::Chef::Provider::Service::Upstart
 end
 
-if node[:doat][:core][:type] == "master"
-  template "/etc/doat/synq.conf" do
-    source "synqd.config.erb"
-    mode "0644"
-    owner "doat"
-    notifies :restart, "service[synqd]"
-    variables :sql_credentials => sql_credentials, :sql => sql_host
-  end
-
-  cookbook_file "/etc/init/synqd.conf" do
-    source "synqd.upstart.conf"
-  end
-
-  service "synqd" do
-    action [:start, :enable]
-    restart_command "stop synqd; start synqd"
-    provider ::Chef::Provider::Service::Upstart
-  end
-  provide_service(:core_master)
-end
+provide_service(:core_master) if node[:doat][:core][:type] == "master"
 
 # run the migrate script only once
 if node[:redis][:instances][:melt][:replication][:role] == "master"
-  execute "/opt/doat/Core/src/migrate.py --conf /etc/doat/core.conf" do
+  execute "/opt/doat/core/Core/src/migrate.py --conf /etc/doat/core.conf" do
     user "doat"
-    cwd "/opt/doat/Core/src/"
+    cwd "/opt/doat/core/Core/src/"
     not_if { ::File.exists?("/etc/doat/migrate.lock") }
     notifies :create, "file[/etc/doat/migrate.lock]"
   end

@@ -1,6 +1,6 @@
 # Configures the melt datasync server
 #
-include_recipe "Doat"
+include_recipe "Doat::core"
 
 cookbook_file "/etc/init/synqd.conf" do
   source "synqd.upstart.conf"
@@ -16,7 +16,12 @@ template "/etc/doat/synqd.conf" do
   variables :sql => sql_host, :sql_credentials => sql_credentials
 end
 
+cookbook_file "/etc/init/synqd.conf" do
+  source "synqd.upstart.conf"
+end
+
 service "synqd" do
   action [:enable, :start]
+  restart_command "stop synqd; start synqd"
   provider ::Chef::Provider::Service::Upstart
 end

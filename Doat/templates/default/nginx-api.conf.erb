@@ -3,7 +3,7 @@ server {
   listen 80;
   listen 81 default;
   listen 443 default;
-  root /opt/doat/www/gondor;
+  root /opt/doat/api/gondor;
   error_log <%= node[:nginx][:log_dir] %>/api.doat.com_error.log;
   access_log <%= node[:nginx][:log_dir] %>/api.doat.com_access.log;
   location ~ "\.svn" {
