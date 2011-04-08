@@ -1,3 +1,4 @@
+[synqd]
 redis_host = 'localhost'
 redis_port = <%= node[:redis][:instances][:melt][:port] %>
 redis_wait_recv_timeout = 10
@@ -10,12 +11,8 @@ sql_password = '<%= @sql_credentials[:password] %>'
 sql_db = 'doat'
 sql_port = <%= @sql[:mysql][:port] %>
 
-log_file='/var/log/doat/synqd.log'
-pidfile='/var/run/doat/synqd.pid'
+log_file= '/var/log/doat/synqd.log'
+pidfile= '/var/run/doat/synqd.pid'
 
 num_workers = <%= node[:doat][:synq][:workers] %>
-
-import os
-myPath = os.path.dirname(os.path.abspath(__file__))
-models_import_path =  myPath+'/../../Core/src/model/MeltModels.py'
 
