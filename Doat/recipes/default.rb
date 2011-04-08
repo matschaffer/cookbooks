@@ -29,6 +29,7 @@ end
 
 user "doat" do
   supports :manage_home => true
+  home "/home/doat"
   action [:create, :manage]
 end
 
