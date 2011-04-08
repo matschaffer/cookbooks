@@ -35,7 +35,6 @@ ruby_block "Manage root's authorized_keys" do
   end
 end
 
-Chef::Log.info "SSH KEYS: " + user_keys.inspect
 user_keys.each do |user, keys|
   auth_keys_file = begin
     ::File.join(node[:etc][:passwd][user][:dir], ".ssh", "authorized_keys")
