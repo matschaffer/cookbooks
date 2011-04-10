@@ -20,6 +20,17 @@ template "/etc/doat/website.local.config.php" do
   mode "0644"
 end
 
+template "/etc/doat/developer.settings.local.php" do
+  source "website-local.config.php.erb"
+  notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
+  variables :sql => sql, :sql_credentials => sql_credentials, :app_config => app_config, :cores => cores
+  mode "0644"
+end
+
+link "/opt/doat/developer/Settings.local.php" do
+  to "/etc/doat/developer.settings.local.php"
+end
+
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-website") do
   source "nginx-website.conf.erb"
   notifies :reload, "service[nginx]"
