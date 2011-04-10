@@ -6,12 +6,15 @@
 
 Defaults        !lecture,tty_tickets,!fqdn
 
+Cmnd_Alias      UPSTART = /sbin/start, /sbin/stop, /sbin/restart, /sbin/initctl
+
 # User privilege specification
 root    			ALL=(ALL) ALL
 
 <% @sudoers_users.each do |user| -%>
 <%= user %> ALL=(ALL) ALL
 <% end -%>
+doat ALL=(ALL) NOPASSWD: UPSTART, /etc/init.d/php*
 
 # Members of the sysadmin group may gain root privileges
 %sysadmin 		ALL=(ALL) ALL
