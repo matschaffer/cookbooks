@@ -2,7 +2,6 @@ author "Avishai Ish-Shalom <avishai@fewbytes.com>"
 description "Scribe logging daemon"
 
 start on (started networking)
-expect fork
 respawn
 respawn limit 5 15
 
@@ -11,4 +10,4 @@ pre-start script
 end script
 
 env LD_LIBRARY_PATH=<%= ::File.dirname(node[:scribe][:daemon]) %>
-exec /sbin/start-stop-daemon --start --exec <%= node[:scribe][:daemon] %> -c <%= node[:scribe][:user] %> -b -m --pidfile /var/run/scribe-client.pid -- -c <%= @conf_file %>
+exec /sbin/start-stop-daemon --start --exec <%= node[:scribe][:daemon] %> -c <%= node[:scribe][:user] %> -- -c <%= @conf_file %>

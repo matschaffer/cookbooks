@@ -30,6 +30,7 @@ define :doat_module do
 
   link link_name do
     to export_dir
+    not_if {::File.symlink? link_name}
   end
 
   # config files links
