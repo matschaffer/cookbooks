@@ -56,7 +56,6 @@ end
 %w{ nagios3 nagios-nrpe-plugin nagios-images }.each do |pkg|
   package pkg
 end
-include_recipe "nagios::nagiosgrapher" if node[:nagios][:nagiosgrapher][:enabled]
 
 service "nagios3" do
   supports :status => true, :restart => true, :reload => true
@@ -165,6 +164,8 @@ cookbook_file "/usr/bin/sms" do
   source "clickatell-sms.py"
   mode "0755"
 end
+
+include_recipe "nagios::nagiosgrapher" if node[:nagios][:nagiosgrapher][:enabled]
 
 node[:nagios][:monitored] = true
 provide_service("monitoring")
