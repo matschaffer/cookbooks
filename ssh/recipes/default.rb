@@ -15,7 +15,7 @@ admin_groups = node[:ssh][:admin_groups] || [ "admins" ]
 search("users", "ssh_public_key:[* TO *]").each do |user|
   user_name = nil
   user_name = user["remote_user"] if user.has_key? "remote_user"
-  if (user["groups"] & admin_groups).any?
+  if user.has_key?("groups") and (user["groups"] & admin_groups).any?
     root_keys << user["ssh_public_key"]
   end
   unless user_name.nil?
@@ -41,11 +41,17 @@ user_keys.each do |user, keys|
                    rescue
                      "/home/#{user}/.ssh/authorized_keys"
                    end
-  file auth_keys_file do
-    content keys.join('\n')
-    owner user
+  directory ::File.dirname(auth_keys_file) do
     mode "0700"
+    owner user
+    only_if "id #{user}"
+  end
+  file auth_keys_file do
+    content keys.join("\n")
+    owner user
+    mode "0600"
     ignore_failure true
+    only_if "id #{user}"
   end
 end
 
