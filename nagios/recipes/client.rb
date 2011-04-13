@@ -47,11 +47,6 @@ gem_package "choice"
   package pkg
 end
 
-service "nagios-nrpe-server" do
-  action [:enable, :start]
-  supports :restart => true, :reload => true
-end
-
 remote_directory "/usr/lib/nagios/plugins" do
   source "plugins"
   owner "nagios"
@@ -66,7 +61,12 @@ template "/etc/nagios/nrpe.cfg" do
   group "nagios"
   mode "0644"
   variables :mon_host => mon_host
-  notifies :restart, resources(:service => "nagios-nrpe-server")
+  notifies :restart, "service[nagios-nrpe-server]"
+end
+
+service "nagios-nrpe-server" do
+  action [:enable, :start]
+  supports :restart => true, :reload => true
 end
 
 ruby_block "nagios-monitored" do
