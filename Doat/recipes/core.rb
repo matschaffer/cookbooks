@@ -47,7 +47,7 @@ template "/etc/doat/core.conf" do
   variables :redis_melt_master => redis_melt_master, :redis_melt_slave => node, :redis_search_node => node,
     :sql_credentials => sql_credentials, :sql => sql_host, :autocomplete_node => node,
     :app_config => app_config, :redis_geodis_node => redis_geodis_node
-  notifies :restart, "service[cored]", :immediately
+  notifies :restart, "service[cored]"
   mode "0644"
 end
 
@@ -55,7 +55,7 @@ doat_module "core"
 
 service "cored" do
   restart_command "stop cored; start cored"
-  action :enable
+  action [:enable, :start]
   provider ::Chef::Provider::Service::Upstart
 end
 
