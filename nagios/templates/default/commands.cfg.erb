@@ -85,6 +85,11 @@ define command {
 }
 
 define command {
+  command_name    check_core
+  command_line    $USER1$/check_core.py -H $HOSTADDRESS$ -w 1 -c 3
+}
+
+define command {
   command_name    check_solr
   command_line    $USER1$/check_solr.rb -c 10 -h $HOSTADDRESS$ -r 10 -p $ARG1$
 }

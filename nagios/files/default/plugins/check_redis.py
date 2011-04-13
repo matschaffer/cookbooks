@@ -31,24 +31,24 @@ def parse_options():
 
 def check_redis(options):
     timestamp = time.time()
-    rd = redis(host=options.host, port=options.port, timeout=options.critical)
+    rd = redis(host=options.host, port=options.port, timeout=options.critical * 2)
     stats = rd.stats()
+    perf_str = ("|" + "\n".join(map(lambda tup: "=".join(tup), stats.items() )))
     conn_time = time.time() - timestamp
     if conn_time > options.critical:
-        die(NAGIOS_FAIL, "FAIL: Connection time was %f" % conn_time)
+        die(NAGIOS_FAIL, ("FAIL: Connection time was %f " + perf_str) % conn_time)
     if conn_time > options.warning:
-        die(NAGIOS_WARN, "WARN: Connection time was %f" % conn_time)
+        die(NAGIOS_WARN, ("WARN: Connection time was %f " + perf_str) % conn_time)
     if options.crit_concurrent and int(stats["connected_clients"]) > options.crit_concurrent:
-        die(NAGIOS_FAIL, "FAIL: Concurrent client connections: %s" % stats["connected_clients"])
+        die(NAGIOS_FAIL, ("FAIL: Concurrent client connections: %s " + perf_str) % stats["connected_clients"])
     if options.warn_concurrent and int(stats["connected_clients"]) > options.warn_concurrent:
-        die(NAGIOS_WARN, "WARN Concurrent client connections: %s" % stats["connected_clients"])
+        die(NAGIOS_WARN, ("WARN Concurrent client connections: %s " + perf_str) % stats["connected_clients"])
 
-    status = "OK | connection_time:%f\n" % conn_time
-    status += ("|" + "\n".join(map(lambda tup: "=".join(tup), stats.items() )))
-    die(NAGIOS_OK, status)
+    status = "OK | connection_time=%f\n" % conn_time
+    die(NAGIOS_OK, status + perf_str)
 
 def die(err_code, msg):
-    print msg + "\n"
+    print msg.rstrip() + "\n"
     exit(err_code)
 
 def try_or_die(func):

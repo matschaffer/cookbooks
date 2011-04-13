@@ -50,11 +50,11 @@ define service {
     check_command       check_redis_concurrents!6378!200!600
 }
 
-define service P
+define service {
     service_description core
     use                 default-service
     hostgroup_name      core
-    check_command       check_http_content_port!api.doat.com!9000!/!active_threads
+    check_command       check_core
 }
 
 <% end %>

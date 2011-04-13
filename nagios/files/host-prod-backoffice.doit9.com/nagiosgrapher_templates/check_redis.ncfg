@@ -1,0 +1,35 @@
+define ngraph{
+	service_name            redis
+        graph_perf_regex        connection_time=([0-9]+)
+        graph_value             response_time
+        graph_units             seconds
+        graph_legend            response time
+	rrd_plottype            AREA
+        rrd_color               c0c0ff
+	step			120
+	page			time
+}
+
+define ngraph{
+	service_name            redis
+        type                    CDEF
+        graph_value             response_time_cdef
+        graph_units
+        graph_legend
+        graph_calc              response_time
+        rrd_plottype            LINE1
+        rrd_color               000000
+	page			time
+}
+
+define ngraph{
+	service_name            redis
+        graph_perf_regex        connected_clients=([0-9]+)
+        graph_value             connected_clients
+        graph_units             clients
+        graph_legend            connected clients
+	rrd_plottype            AREA
+        rrd_color               c0c0ff
+	step			120
+	page			clients
+}

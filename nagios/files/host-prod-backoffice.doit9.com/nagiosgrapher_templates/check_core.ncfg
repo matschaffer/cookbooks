@@ -1,0 +1,35 @@
+define ngraph{
+	service_name            core
+        graph_perf_regex        global_rps=([0-9\.,]+)
+        graph_value             rps
+        graph_units             requests/second
+        graph_legend            Requests per second
+        rrd_plottype            AREA
+        rrd_color               c0c0ff
+	step			120
+	page			rps
+}
+
+define ngraph{
+        service_name            core
+        type                    CDEF
+        graph_value             rps_cdef
+        graph_units
+        graph_legend
+        graph_calc              rps
+        rrd_plottype            LINE1
+        rrd_color               000000
+	page			rps
+}
+
+define ngraph{
+	service_name            core
+        graph_perf_regex        global_avg=([0-9\.,]+)
+        graph_value             global_avg
+        graph_units             seconds
+        graph_legend            Average response per query
+        rrd_plottype            AREA
+        rrd_color               c0c0ff
+	step			120
+	page			response time
+}
