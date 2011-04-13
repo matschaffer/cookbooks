@@ -1,10 +1,6 @@
 include_recipe "Doat::webserver_common"
 include_recipe "php::module_curl"
 
-["developer", "bin/#{node[:doat][:arch]}"].each do |component|
-  doat_svn component
-end
-
 app_config = data_bag_item(:doat_config, :website)
 sql = search(:endpoints, "type:rds AND db:#{app_config["db"]}").first
 sql_credentials = search(:credentials, "usage:db_#{app_config["db"]}").first
@@ -27,10 +23,6 @@ template "/etc/doat/developer.settings.local.php" do
   mode "0644"
 end
 
-link "/opt/doat/developer/Settings.local.php" do
-  to "/etc/doat/developer.settings.local.php"
-end
-
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-website") do
   source "nginx-website.conf.erb"
   notifies :reload, "service[nginx]"
@@ -38,6 +30,7 @@ template ::File.join(node[:nginx][:dir], "sites-available", "doat-website") do
 end
 
 doat_module "website"
+doat_module "developer"
 
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-developer") do
   source "nginx-developer.conf.erb"
