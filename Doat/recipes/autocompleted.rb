@@ -12,6 +12,12 @@ template "/etc/doat/autocomplete.conf" do
   mode "0644"
 end
 
+directory "/opt/doat/data" do
+  owner "doat"
+  group "doat"
+  mode "0755"
+end
+
 # get a bootstrap file from s3
 s3_credentials = search(:credentials, "usage:s3 AND usage:doat-bootstrap").first
 aws_s3_file node[:doat][:autocompleted][:dump_file] do

@@ -30,12 +30,6 @@ redis_instance "search" do
   master master_node
 end
 
-directory "/opt/doat/data" do
-  owner "doat"
-  group "doat"
-  mode "0755"
-end
-
 cookbook_file "/etc/init/cored.conf" do
   source "cored.upstart.conf"
 end
