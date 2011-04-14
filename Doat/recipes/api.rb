@@ -5,6 +5,16 @@ package "php5-thrift"
 
 doat_svn "bin/#{node[:doat][:arch]}"
 
+directory "/mnt/nginx/cache/api" do
+  recursive true
+  owner "www-data"
+  mode "0755"
+end
+
+directory "/mnt/nginx/tmp" do
+  owner "www-data"
+  mode "0755"
+end
 
 link "/etc/php5/conf.d/thrift.ini" do
   to "/etc/php.d/thrift_protocol.ini"

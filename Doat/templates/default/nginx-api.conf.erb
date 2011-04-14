@@ -1,3 +1,10 @@
+<% bindsocket =  if node[:php][:cgi][:bindaddress].start_with?("/")
+   "unix:" + node[:php][:cgi][:bindaddress]
+ else
+   node[:ipaddress] + ":" + node[:php][:cgi][:port]
+ end
+%>
+fastcgi_cache_path      /mnt/nginx/cache/api levels=1:2 keys_zone=api_cache:20m inactive=10m max_size=2000m;
 server {
   server_name api.doat.com api.prod.doat.com api.new.doat.com;
   listen 80;
@@ -17,18 +24,33 @@ server {
   }
   location ~ .*\.php(/.*)?$ {
     include fastcgi_params;
-    fastcgi_pass <%= if node[:php][:cgi][:bindaddress].start_with?("/")
-                         "unix:" + node[:php][:cgi][:bindaddress]
-                       else
-                         node[:ipaddress] + ":" + node[:php][:cgi][:port]
-                       end
-                 %>;
+    fastcgi_pass <%= bindsocket %>;
     fastcgi_split_path_info ^(.+\.php)(.*)$;
     fastcgi_param SCRIPT_NAME     $fastcgi_script_name;
     fastcgi_param PATH_INFO       $fastcgi_path_info;
     fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     fastcgi_pass_header       Set-Cookie;
+    fastcgi_temp_path /mnt/nginx/tmp/ 1 2;
+  }
+  location ~ ^/doat/0.4/Search/suggestions(\.\w+)?/?$ {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_NAME     "/index.php";
+    fastcgi_index index.php;
+    fastcgi_pass <%= bindsocket %>;
+    fastcgi_split_path_info ^()(.*)$;
+    fastcgi_param PATH_INFO       $fastcgi_path_info;
+    fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+    fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+    fastcgi_pass_header       Set-Cookie;
+    fastcgi_cache_min_uses  5;
+    fastcgi_cache_use_stale error  timeout invalid_header http_500;
+    fastcgi_cache_key $request_method$request_uri$arg_prefix;
+    fastcgi_cache   api_cache;
+    fastcgi_cache_valid   200 302  20m;
+    fastcgi_cache_valid   301      20m;
+    fastcgi_cache_valid   any      1m;
+    fastcgi_temp_path /mnt/nginx/tmp/ 1 2;
   }
 }
 
