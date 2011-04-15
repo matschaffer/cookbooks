@@ -43,6 +43,7 @@ end
 pen_cluster "core" do
   port 9091
   nodes core_nodes
+  arguments "-r -x 500"
 end
 
 nginx_site "doat-api"
