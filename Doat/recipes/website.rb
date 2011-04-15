@@ -23,10 +23,13 @@ template "/etc/doat/developer.settings.local.php" do
   mode "0644"
 end
 
+socket = node[:php][:fpm][:pools][:default][:socket]
+socket = "unix:" + socket if socket.start_with? "/"
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-website") do
   source "nginx-website.conf.erb"
   notifies :reload, "service[nginx]"
   mode "0644"
+  variables :socket => socket
 end
 
 doat_module "website"
@@ -35,6 +38,7 @@ doat_module "developer"
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-developer") do
   source "nginx-developer.conf.erb"
   notifies :reload, "service[nginx]"
+  variables :socket => socket
   mode "0644"
 end
 

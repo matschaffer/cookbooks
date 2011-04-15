@@ -29,8 +29,11 @@ end
 
 doat_module "api"
 
+socket = node[:php][:fpm][:pools][:default][:socket]
+socket = "unix:" + socket if socket.start_with? "/"
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-api") do
   source "nginx-api.conf.erb"
+  variables :socket => socket
   notifies :reload, "service[nginx]"
   mode "0644"
 end

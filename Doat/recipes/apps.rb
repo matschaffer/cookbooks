@@ -16,15 +16,18 @@ memcache_nodes = all_providers_for_service(:memcached)
 
 template "/etc/doat/apps.settings.local.php" do
   source "prod-apps-settings.php.erb"
-  notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
+  notifies :restart, "service[php5-fpm]" if node[:php][:apc][:stat] == 0
   variables :sql => sql, :sql_credentials => sql_credentials, :app_config => app_config, :memcache_nodes => memcache_nodes
   mode "0644"
 end
 
 doat_module "apps"
 
+socket = node[:php][:fpm][:pools][:default][:socket]
+socket = "unix:" + socket if socket.start_with? "/"
 template ::File.join(node[:nginx][:dir], "sites-available", "doat-apps") do
   source "nginx-apps.conf.erb"
+  variables :socket => socket
   notifies :reload, "service[nginx]"
   mode "0644"
 end

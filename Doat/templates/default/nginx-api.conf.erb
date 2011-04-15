@@ -1,9 +1,3 @@
-<% bindsocket =  if node[:php][:cgi][:bindaddress].start_with?("/")
-   "unix:" + node[:php][:cgi][:bindaddress]
- else
-   node[:ipaddress] + ":" + node[:php][:cgi][:port]
- end
-%>
 fastcgi_cache_path      /mnt/nginx/cache/api levels=1:2 keys_zone=api_cache:20m inactive=10m max_size=2000m;
 server {
   server_name api.doat.com api.prod.doat.com api.new.doat.com;
@@ -24,7 +18,7 @@ server {
   }
   location ~ .*\.php(/.*)?$ {
     include fastcgi_params;
-    fastcgi_pass <%= bindsocket %>;
+    fastcgi_pass <%= @socket %>;
     fastcgi_split_path_info ^(.+\.php)(.*)$;
     fastcgi_param SCRIPT_NAME     $fastcgi_script_name;
     fastcgi_param PATH_INFO       $fastcgi_path_info;
@@ -37,7 +31,7 @@ server {
     include fastcgi_params;
     fastcgi_param SCRIPT_NAME     "/index.php";
     fastcgi_index index.php;
-    fastcgi_pass <%= bindsocket %>;
+    fastcgi_pass <%= @socket %>;
     fastcgi_split_path_info ^()(.*)$;
     fastcgi_param PATH_INFO       $fastcgi_path_info;
     fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
