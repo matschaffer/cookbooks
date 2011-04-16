@@ -15,56 +15,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 include_recipe "php::module_mysql"
 include_recipe "php::module_sqlite3"
 include_recipe "php::module_memcache"
 include_recipe "php::module_gd"
 include_recipe "php::module_pgsql"
 
-case node[:platform]
-  when "centos", "redhat", "fedora", "suse"
-    #placeholder modify when available
-  when "debian", "ubuntu"
-    package "php5-cgi" do
-      action :upgrade
-    end
-end
+package value_for_platform([:ubuntu, :debian] => {"default" => "php5-fpm"},
+                           ["centos", "redhat"] => {"default" => "php-fpm"},
+                           "default" => "php5-fpm")
 
 user "www-data" do
-  uid "33"
   gid "www-data"
   shell "/bin/true"
   home "/var/www"
 end
+directory node[:php][:fpm][:sockets_dir] do
+  mode "0755"
+end
 
 memcache_servers = all_providers_for_service("memcached")
-template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/php.ini"}, "default" => "/etc/php5/cgi/php.ini") do
+template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/etc/php.ini"}, "default" => "/etc/php5/fpm/php.ini") do
   source "php.ini.erb"
   owner "root"
   group "root"
   mode 0644
   variables :memcache_servers => memcache_servers
-  notifies :restart, resources(:service => "php-cgi"), :delayed
+  notifies :restart, "service[php5-fpm]", :delayed
 end
 
-# handle socket directory
-if node[:php][:cgi][:bindaddress].start_with?("/")
-  directory ::File.dirname(node[:php][:cgi][:bindaddress]) do
-    owner "www-data"
-    mode "0755"
-  end
-end
+php_fpm_pool "default" if node[:php][:fpm][:pools][:default][:enable]
 
-template "/etc/init.d/php-cgi" do
-  source "spawn-php-cgi.erb"
-  mode "0755"
-  notifies :restart, "service[php-cgi]", :immediately
-end
-
-service "php-cgi" do
-  running true
-  supports :restart => true , :start => true, :stop => true, :reload => false
-  enabled true
-  action [ :enable, :start ]
+service "php5-fpm" do
+  action [:start, :enable]
 end

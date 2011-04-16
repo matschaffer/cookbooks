@@ -24,6 +24,8 @@ define :pear_module, :enable => true do
   
   php_service = if node.recipe? "php::php5-cgi"
     "service[php-cgi]"
+  elsif node.recipe? "php::php5-fpm"
+    "service[php5-fpm]"
   else
     "service[apache2]"
   end
