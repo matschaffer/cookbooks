@@ -27,7 +27,7 @@ define :php_fpm_pool do
     conf = node[:php][:fpm][:pools][:default]
   end
 
-  if params.has_key?(:bind) and not params[:bind].start_with?("/")
+  if params.has_key?(:bind) and not params[:bind].start_with?("/") # using inet socket
     params[:bind] += ":" + params[:port]
   else
     params[:bind] = ::File.join(node[:php][:fpm][:sockets_dir], params[:name] + ".sock")
@@ -47,4 +47,8 @@ define :php_fpm_pool do
       :chroot_dir => params.fetch(:chroot, nil), :chdir => chdir
     notifies :restart, "service[php5-fpm]"
   end
+
+  provide_service("php5-worker-#{params[:name]}") if \
+    params[:bind] =~ /(?:[0-9]{3}\.){3}[0-9]{3}/ and not params[:bind].start_with?("127.")
+    
 end

@@ -177,11 +177,12 @@ pm.max_requests = <%= @pool_conf[:pm][:max_requests] %>
 <% if @chroot_dir %>
 chroot = <%= @chroot_dir %>
 chdir = /
-<% end %>
  
+<% else %>
 ; Chdir to this directory at the start. This value must be an absolute path.
 ; Default Value: current directory or / when chroot
 chdir = <%= @chdir %>
+<% end %>
  
 ; Redirect worker stdout and stderr into main error log. If not set, stdout and
 ; stderr will be redirected to /dev/null according to FastCGI specs.
