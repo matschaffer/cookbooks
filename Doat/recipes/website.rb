@@ -1,7 +1,7 @@
 include_recipe "Doat::webserver_common"
 include_recipe "php::module_curl"
 
-app_config = data_bag_item(:doat_config, :website)
+app_config = data_bag_item("doat_config", "website")
 sql = search(:endpoints, "type:rds AND db:#{app_config["db"]}").first
 sql_credentials = search(:credentials, "usage:db_#{app_config["db"]}").first
 cores = all_providers_for_service(:core).reduce({}) do |cores_hash, core|

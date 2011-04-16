@@ -9,7 +9,7 @@ include_recipe "Doat::webserver_common"
   end
 end
 
-app_config = data_bag_item(:doat_config, :apps)
+app_config = data_bag_item("doat_config", "apps")
 sql = search(:endpoints, "type:rds AND db:#{app_config["db"]}").first
 sql_credentials = search(:credentials, "usage:db_#{app_config["db"]}").first
 memcache_nodes = all_providers_for_service(:memcached)

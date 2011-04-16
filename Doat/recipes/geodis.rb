@@ -14,7 +14,7 @@ git "/opt/doat/geodis" do
   action :sync
 end
 
-ip2location_credentials = data_bag_item(:credentials, "ip2location")
+ip2location_credentials = data_bag_item("credentials", "ip2location")
 bash "initialize geodis" do
   cwd "/opt/doat/geodis/src"
   code <<-EOS
