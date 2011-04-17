@@ -18,12 +18,12 @@ end
 
 link "/etc/php5/conf.d/thrift.ini" do
   to "/etc/php.d/thrift_protocol.ini"
-  notifies :restart, "service[php-cgi]"
+  notifies :restart, "service[php5-fpm]"
 end
 
 template "/etc/doat/api.settings.local.php" do
   source "api-Settings.local.php.erb"
-  notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
+  notifies :restart, "service[php5-fpm]" if node[:php][:apc][:stat] == 0
   mode "0644"
 end
 

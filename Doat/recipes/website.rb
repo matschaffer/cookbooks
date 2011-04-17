@@ -11,14 +11,14 @@ end
 
 template "/etc/doat/website.local.config.php" do
   source "website-local.config.php.erb"
-  notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
+  notifies :restart, "service[php5-fpm]" if node[:php][:apc][:stat] == 0
   variables :sql => sql, :sql_credentials => sql_credentials, :app_config => app_config, :cores => cores
   mode "0644"
 end
 
 template "/etc/doat/developer.settings.local.php" do
   source "website-local.config.php.erb"
-  notifies :restart, "service[php-cgi]" if node[:php][:apc][:stat] == 0
+  notifies :restart, "service[php5-fpm]" if node[:php][:apc][:stat] == 0
   variables :sql => sql, :sql_credentials => sql_credentials, :app_config => app_config, :cores => cores
   mode "0644"
 end
