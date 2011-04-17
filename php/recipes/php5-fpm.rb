@@ -21,9 +21,12 @@ include_recipe "php::module_memcache"
 include_recipe "php::module_gd"
 include_recipe "php::module_pgsql"
 
+www_pool = ::File.join(node[:php][:fpm][:pools_dir], "www.conf")
 package value_for_platform([:ubuntu, :debian] => {"default" => "php5-fpm"},
                            ["centos", "redhat"] => {"default" => "php-fpm"},
-                           "default" => "php5-fpm")
+                           "default" => "php5-fpm") do
+  notifies :delete, "file[#{www_pool}]"
+end
 
 user "www-data" do
   gid "www-data"
@@ -32,6 +35,10 @@ user "www-data" do
 end
 directory node[:php][:fpm][:sockets_dir] do
   mode "0755"
+end
+
+file www_pool do
+  action :nothing
 end
 
 memcache_servers = all_providers_for_service("memcached")
