@@ -40,11 +40,11 @@ define :php_fpm_pool do
     "default" => "/srv/www"
   )
 
-  template ::File.join(node[:php][:fpm][:pools_dir], params[:name]) do
+  template ::File.join(node[:php][:fpm][:pools_dir], params[:name] + ".conf") do
     mode "0644"
     source "php5-fpm-pool.conf.erb"
     variables :pool_conf => conf, :socket => node[:php][:fpm][:pools][params[:name]][:socket],
-      :chroot_dir => params.fetch(:chroot, nil), :chdir => chdir
+      :chroot_dir => params.fetch(:chroot, nil), :chdir => chdir, :name => params[:name]
     notifies :restart, "service[php5-fpm]"
   end
 
