@@ -35,7 +35,7 @@ autocomplete_port = <%= @autocomplete_node[:doat][:autocompleted][:port] %>
 
 ### thrift ###
 thrift_port = <%= node[:doat][:core][:port] %>
-thrift_workers = <%= node[:doat][:core][:workers] %>
+num_core_workers = <%= node[:doat][:core][:workers] %>
 
 ### monitoring ###
 monitor_sample_length = <%= node[:doat][:core][:monitor_sample_length] %>
