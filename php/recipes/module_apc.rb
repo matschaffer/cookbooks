@@ -21,7 +21,7 @@
 pack = value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"default" => "php-pecl-apc"}, "default" => "php5-apc")
 if pack
   package pack do
-    action :upgrade
+    action :install
   end
 end
 
