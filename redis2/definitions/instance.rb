@@ -69,5 +69,4 @@ define :redis_instance, :port => nil, :data_dir => nil, :master => nil do
     end
     action [:start, :enable]
   end
-  provide_service instance_name, :replication => node[:redis][:instances][params[:name]][:replication][:role]
 end
