@@ -45,7 +45,7 @@ template value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "/et
   group "root"
   mode 0644
   variables :memcache_servers => memcache_servers
-  notifies :restart, resources(:service => "php-cgi"), :delayed
+  notifies :restart, "service[php-cgi]", :delayed
 end
 
 # handle socket directory
