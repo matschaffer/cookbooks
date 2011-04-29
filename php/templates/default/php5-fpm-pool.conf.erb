@@ -161,7 +161,9 @@ pm.max_requests = <%= @pool_conf[:pm][:max_requests] %>
  
 ; Set open file descriptor rlimit.
 ; Default Value: system defined value
-;rlimit_files = 1024
+<% if @pool_conf[:rlimit_files] %>
+rlimit_files = <%= @pool_conf[:rlimit_files] %>
+<% end %>
  
 ; Set max core size rlimit.
 ; Possible Values: 'unlimited' or an integer greater or equal to 0
