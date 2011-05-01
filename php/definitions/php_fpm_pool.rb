@@ -34,11 +34,20 @@ define :php_fpm_pool do
   end
   node[:php][:fpm][:pools][params[:name]][:socket] = params[:bind]
 
-  chdir = value_for_platform(
-    [:debian, :ubuntu] => {"default" => "/var/www"},
-    [:centos, :redhat, :fedora] => {"default" => "/var/www/html"},
-    "default" => "/srv/www"
-  )
+  if params[:cwd]
+    chdir = params[:cwd]
+  else
+    chdir = value_for_platform(
+      [:debian, :ubuntu] => {"default" => "/var/www"},
+      [:centos, :redhat, :fedora] => {"default" => "/var/www/html"},
+      "default" => "/srv/www"
+    )
+  end
+
+  directory ::File.join(params.fetch(:chroot, ""), chdir) do
+    owner conf[:user]
+    mode "0644"
+  end
 
   template ::File.join(node[:php][:fpm][:pools_dir], params[:name] + ".conf") do
     mode "0644"

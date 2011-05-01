@@ -178,7 +178,7 @@ rlimit_files = <%= @pool_conf[:rlimit_files] %>
 ; Default Value: not set
 <% if @chroot_dir %>
 chroot = <%= @chroot_dir %>
-chdir = /
+chdir = <%= @chdir %>
  
 <% else %>
 ; Chdir to this directory at the start. This value must be an absolute path.
