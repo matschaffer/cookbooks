@@ -24,3 +24,4 @@ default[:redis][:instances][:default][:vm][:max_threads] = 4
 
 default[:redis][:instances][:default][:maxmemory_samples] = 3
 default[:redis][:instances][:default][:maxmemory_policy] = "volatile-lru"
+default[:redis][:instances][:default][:bgsave] = true
