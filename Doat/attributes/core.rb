@@ -13,3 +13,4 @@ default[:doat][:core][:geodis][:redis_db] = 8
 
 default[:doat][:synq][:workers] = 8
 
+default[:doat][:core][:s3_melt_dump_key] = "core/latest/appendonly.atf"
