@@ -17,10 +17,14 @@ default[:graphite][:graphite_web][:version] = "0.9.8"
 default[:graphite][:graphite_web][:uri] = "http://launchpadlibrarian.net/68173206/graphite-web-0.9.8.tar.gz"
 default[:graphite][:graphite_web][:checksum] = "810f183e245ab1944bfb331e88d8ac2df6dd1797be810e7cf6368d1ba7e4ccab"
 default[:graphite][:graphite_web][:threads] = 20
+default[:graphite][:graphite_web][:server_name] = "graphite." + domain
 
 default[:graphite][:dir] = "/etc/graphite"
 default[:graphite][:storage_dir] = "/var/lib/graphite/storage"
 default[:graphite][:log_dir] = "/var/log/graphite"
+
+default[:graphite][:install_flavor] = "packages"
+
 if graphite[:install_flavor] == "source"
   default[:graphite][:webapp_dir] = "/opt/graphite/webapp"
   default[:graphite][:django_root] = "/usr/lib/python2.6/site-packages/django"

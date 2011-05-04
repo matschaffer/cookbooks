@@ -13,10 +13,10 @@ if node[:graphite][:install_flavor] == "source"
   include_recipe "graphite::carbon_source"
 else
   package "python-carbon"
+  service "carbon-cache" do
+    action :start
+  end
 end
 
-service "carbon-cache" do
-  action :start
-end
 
 provide_service("graphite-carbon")
