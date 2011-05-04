@@ -1,0 +1,5 @@
+{
+  graphitePort: <%= @graphite_node[:graphite][:port] %>
+, graphiteHost: "<%= @graphite_node[:ipaddress] %>"
+, port: <%= node[:statsd][:port] %>
+}
