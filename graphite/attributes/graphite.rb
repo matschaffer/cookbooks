@@ -32,3 +32,5 @@ else
   default[:graphite][:webapp_dir] = "/usr/share/graphite/webapp"
   default[:graphite][:django_root] = "/usr/share/pyshared/django"
 end
+
+default[:graphite][:carbon_user] = apache[:user]

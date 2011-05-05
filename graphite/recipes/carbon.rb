@@ -3,6 +3,10 @@ include_recipe "graphite::whisper"
 
 directory node[:graphite][:storage_dir]
 
+user node[:graphite][:carbon_user] do
+  system true
+end
+
 template ::File.join(node[:graphite][:dir], "carbon.conf") do
   notifies :restart, "service[carbon-cache]"
 end

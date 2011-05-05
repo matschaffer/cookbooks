@@ -9,7 +9,7 @@
   DocumentRoot "<%= node[:graphite][:webapp_dir] %>"
   ErrorLog <%= node[:graphite][:log_dir] %>/webapp/error.log
   CustomLog <%= node[:graphite][:log_dir] %>/webapp/access.log common
-  WSGIDaemonProcess graphite user=<%= node[:apache][:user] %> group=<%= node[:apache][:group] %> threads=<%= node[:graphite][:graphite_web][:threads] %>
+  WSGIDaemonProcess graphite user=<%= node[:apache][:user] %> threads=<%= node[:graphite][:graphite_web][:threads] %>
   WSGIProcessGroup graphite
   WSGIScriptAlias / <%= node[:graphite][:webapp_dir] %>/graphite/graphite.wsgi
   <Directory <%= node[:graphite][:webapp_dir] %>>
@@ -21,15 +21,6 @@
       Order deny,allow
       Allow from all
   </Directory>
-
-  <Location "/">
-    SetHandler python-program
-    PythonPath "['<%= node[:graphite][:webapp_dir] %>'] + sys.path"
-    PythonHandler django.core.handlers.modpython
-    SetEnv DJANGO_SETTINGS_MODULE graphite.settings
-    PythonDebug Off
-    PythonAutoReload Off
-  </Location>
 
   <Location "/content/">
     SetHandler None

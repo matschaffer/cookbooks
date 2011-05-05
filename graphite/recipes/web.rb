@@ -11,7 +11,9 @@ template "/etc/apache2/sites-available/graphite" do
   source "graphite-vhost.conf.erb"
 end
 
-template ::File.join(node[:graphite][:webapp_dir], "graphite", "graphite.wsgi")
+template ::File.join(node[:graphite][:webapp_dir], "graphite", "graphite.wsgi") do
+  mode "0644"
+end
 
 apache_site "graphite"
 
@@ -23,6 +25,10 @@ end
 directory node[:graphite][:storage_dir] do
   owner node[:apache][:user]
   group node[:apache][:group]
+end
+
+cookbook_file ::File.join(node[:graphite][:dir], "dashboard.conf") do
+  mode "0644"
 end
 
 cookbook_file ::File.join(node[:graphite][:storage_dir], "graphite.db") do
