@@ -29,8 +29,9 @@ when "redhat", "centos", "fedora"
       "/etc/init.d/ganglia-monitor"
     not_if "test -f /etc/init.d/ganglia-monitor"
   end
-
-  user "ganglia"
+end
+user node[:ganglia][:user] do
+  system true
 end
 
 directory "/etc/ganglia"

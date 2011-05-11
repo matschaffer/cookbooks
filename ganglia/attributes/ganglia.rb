@@ -4,6 +4,7 @@ default[:ganglia][:checksum]      = "bb1a4953"
 default[:ganglia][:cluster_name]  = "default"
 default[:ganglia][:grid_name]     = "default"
 default[:ganglia][:owner]         = "default"
+default[:ganglia][:user]          = "ganglia"
 
 default[:ganglia][:udp_recv_port] = 8649
 default[:ganglia][:tcp_recv_port] = 8649

@@ -11,16 +11,24 @@ when "redhat", "centos", "fedora"
   end
 end
 
+user node[:ganglia][:user] do
+  system true
+end
+
 directory "/var/lib/ganglia/rrds" do
-  owner "nobody"
+  owner node[:ganglia][:user]
   recursive true
 end
 
 hosts_per_cluster = search(:node, "recipes:ganglia").reduce({}) do |h,n|
-  if h.has_key? n[:ganglia][:cluster_name]
-    h[n[:ganglia][:cluster_name]].push "#{n.ipaddress}:#{n.ganglia.tcp_recv_port}"
+  if n[:ganglia].has_key? :tcp_recv_port
+    if h.has_key? n[:ganglia][:cluster_name]
+      h[n[:ganglia][:cluster_name]].push "#{n.ipaddress}:#{n.ganglia.tcp_recv_port}"
+    else
+      h[n[:ganglia][:cluster_name]] = ["#{n.ipaddress}:#{n.ganglia.tcp_recv_port}"]
+    end
   else
-    h[n[:ganglia][:cluster_name]] = ["#{n.ipaddress}:#{n.ganglia.tcp_recv_port}"]
+    Chef::Log.warn "#{n.name} doesn't have attribute ganglia.tcp_recv_port"
   end
   h
 end
