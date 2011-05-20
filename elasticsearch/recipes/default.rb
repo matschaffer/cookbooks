@@ -40,9 +40,7 @@ EOH
   not_if { ::File.exists? "#{node[:elasticsearch][:inst_dir]}/bin/elasticsearch" }
 end
 
-es_hosts = all_providers_for_service(:elasticsearch,
-                               :service_filters => {
-                                     :cluster_name => node[:elasticsearch][:es][:cluster][:name] }).map do |n|
+es_hosts = search("recipe:elasticsearch AND elasticsearch_es_cluster_name:#{node[:elasticsearch][:es][:cluster][:name]}").map do |n|
   n[:ipaddress]
 end
 file ::File.join(node[:elasticsearch][:conf_dir], "elasticsearch.json") do
@@ -63,21 +61,29 @@ when "upstart"
   init_script = "/etc/init/elasticsearch.conf"
   init_script_template = "elasticsearch.upstart.conf.erb"
   init_mode = "0644"
+when "runit"
+  include_recipe "runit"
+  runit_service "elasticsearch" do
+    template_name "elasticsearch"
+    cookbook "elasticsearch"
+    options :user => node[:elasticsearch][:user], :defaults_file => init_config_file
+  end
 when "init"
   init_script = "/etc/init.d/elasticsearch"
   init_script_template = "elasticsearch.init.erb"
   init_mode = "0755"
 end
 
-template init_script do
-  source init_script_template
-  variables :init_config_file => init_config_file
-  mode init_mode
+if init_script
+  template init_script do
+    source init_script_template
+    variables :init_config_file => init_config_file
+    mode init_mode
+  end
+
+  service "elasticsearch" do
+    action [:enable, :start]
+    provider ::Chef::Provider::Service::Upstart if node[:elasticsearch][:init_style] == "upstart"
+  end
 end
 
-service "elasticsearch" do
-  action [:enable, :start]
-  provider ::Chef::Provider::Service::Upstart if node[:elasticsearch][:init_style] == "upstart"
-end
-
-provide_service(:elasticsearch, :cluster_name => node[:elasticsearch][:es][:cluster][:name])

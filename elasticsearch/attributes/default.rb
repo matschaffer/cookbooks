@@ -1,4 +1,4 @@
-default[:elasticsearch][:tarball_url] = "http://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.15.2.tar.gz"
+default[:elasticsearch][:tarball_url] = "https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.16.1.tar.gz"
 default[:elasticsearch][:user]                = "elasticsearch"
 default[:elasticsearch][:inst_dir]            = "/opt/elasticsearch"
 default[:elasticsearch][:init_style]          = "init"
