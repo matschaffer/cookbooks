@@ -1,5 +1,5 @@
 define :redis_instance, :port => nil, :data_dir => nil, :master => nil do
-  include_recipe "redis"
+  include_recipe "redis2"
   instance_name = "redis_#{params[:name]}"
   # if no explicit replication role was defined, it's a master
   node.default_unless[:redis][:instances][params[:name]][:replication][:role] = "master"

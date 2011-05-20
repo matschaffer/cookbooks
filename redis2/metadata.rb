@@ -10,7 +10,7 @@ supports         "centos", ">= 5.5"
 supports         "redhat", ">= 5.5"
 depends          "runit"
 
-recipe           "redis", "Installs and configures redis"
+recipe           "redis2", "Installs and configures redis"
 
 attribute 'redis/source_url',
   :display_name => "Redis source URL",
