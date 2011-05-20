@@ -63,21 +63,30 @@ when "upstart"
   init_script = "/etc/init/elasticsearch.conf"
   init_script_template = "elasticsearch.upstart.conf.erb"
   init_mode = "0644"
+when "runit"
+  include_recipe "runit"
+  runit_service "elasticsearch" do
+    template_name "elasticsearch"
+    cookbook "elasticsearch"
+    options :user => node[:elasticsearch][:user], :defaults_file => init_config_file
+  end
 when "init"
   init_script = "/etc/init.d/elasticsearch"
   init_script_template = "elasticsearch.init.erb"
   init_mode = "0755"
 end
 
-template init_script do
-  source init_script_template
-  variables :init_config_file => init_config_file
-  mode init_mode
-end
+if init_script
+  template init_script do
+    source init_script_template
+    variables :init_config_file => init_config_file
+    mode init_mode
+  end
 
-service "elasticsearch" do
-  action [:enable, :start]
-  provider ::Chef::Provider::Service::Upstart if node[:elasticsearch][:init_style] == "upstart"
+  service "elasticsearch" do
+    action [:enable, :start]
+    provider ::Chef::Provider::Service::Upstart if node[:elasticsearch][:init_style] == "upstart"
+  end
 end
 
 provide_service(:elasticsearch, :cluster_name => node[:elasticsearch][:es][:cluster][:name])

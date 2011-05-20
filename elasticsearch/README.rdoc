@@ -2,8 +2,21 @@
 Elastic search is a Lucene based search server. This cookbook installs and configures it.
 
 = REQUIREMENTS:
+runit cookbook, java cookbook
 
 = ATTRIBUTES:
+== Native elasticsearch attributes
+Attributes under node[:elasticsearch][:es] are converted to JSON and written to the json configuration file. See elasticsearch docs for available configuration attributes. E.G.:
+node[:elasticsearch][:es][:network][:bind_host] = "192.168.1.220"
+Is equivalent to setting:
+network :
+  host : 192.168.1.220
+
+in the YAML configuration file.
+== Cookbook attributes
+Most are pretty self-explanatory.
+* node[:elasticsearch][:init_style] - available options are "runit", "init" and "upstart"
 
 = USAGE:
+Include the elasticsearch::default recipe where needed.
 
