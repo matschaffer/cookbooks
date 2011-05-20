@@ -4,4 +4,4 @@ exec 2>&1
 export ES_MAX_MEM
 export ES_MIN_MEM
 export ES_JAVA_OPTS
-exec chpst -o 65536 -u <%= @options[:user] %> <%= node[:elasticsearch][:inst_dir] %>/bin/elasticsearch -f $DAEMON_OPTS
+exec chpst -o 65536 -u <%= @options[:user] %> <%= node[:elasticsearch][:inst_dir] %>/bin/elasticsearch -f $DAEMON_ARGS
