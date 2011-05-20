@@ -57,5 +57,4 @@ define :redis_instance, :port => nil, :data_dir => nil, :master => nil do
     supports :reload => false, :restart => true, :start => true, :stop => true
     action :start
   end
-  provide_service instance_name, :replication => node[:redis][:instances][params[:name]][:replication][:role]
 end
