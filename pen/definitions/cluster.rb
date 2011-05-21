@@ -12,12 +12,22 @@ define :pen_cluster, :nodes => nil, :port => nil, :user => 'root',
     a.join(':')
   end
 
-  if node[:pen][:init_style] == "upstart"
+  case node[:pen][:init_style]
+  when "upstart"
     init_file = "/etc/init/#{svc}.conf"
     init_template = "pen.upstart.conf.erb"
-  else
+  when "init"
     init_file = "/etc/init.d/#{svc}.conf"
     init_template = "pen.init.erb"
+  when "runit"
+    include_recipe "runit"
+    runit_service svc do
+      template_name "pen"
+      cookbook "pen"
+      options :pen_nodes => pen_nodes.sort, :port => params[:port], :name => params[:name], :pen_options => params[:arguments]
+    end
+  else
+    raise Chef::Exceptions::UnsupportedAction, "#{node[:pen][:init_style]} is not supported"
   end
 
   template init_file do
