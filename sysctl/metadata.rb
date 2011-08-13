@@ -3,6 +3,6 @@ maintainer_email "avishai@fewbytes.com"
 license          "All rights reserved"
 description      "Configures sysctl parameters"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.0.1"
+version          "0.0.2"
 supports         "ubuntu"
 supports         "debian"
