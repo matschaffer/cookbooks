@@ -3,13 +3,14 @@ maintainer_email "avishai@fewbytes.com"
 license          "Apache 2.0"
 description      "Installs/Configures redis"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.1"
+version          "0.3"
 supports         "ubuntu", ">= 9.04"
 supports         "debian", ">= 6.0"
 supports         "centos", ">= 5.5"
 supports         "redhat", ">= 5.5"
+depends          "runit"
 
-recipe           "redis", "Installs and configures redis"
+recipe           "redis2", "Installs and configures redis"
 
 attribute 'redis/source_url',
   :display_name => "Redis source URL",

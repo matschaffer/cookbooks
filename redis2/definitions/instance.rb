@@ -1,72 +1,60 @@
 define :redis_instance, :port => nil, :data_dir => nil, :master => nil do
-  include_recipe "redis"
-  instance_name = "redis_#{params[:name]}"
+  include_recipe "redis2"
+  instance_name = "redis_#{params['name']}"
   # if no explicit replication role was defined, it's a master
-  node.default_unless[:redis][:instances][params[:name]][:replication][:role] = "master"
-  node[:redis][:instances][params[:name]] = {} unless node[:redis][:instances].has_key? params[:name]
-  node[:redis][:instances][params[:name]][:port] = params[:port] unless params[:port].nil?
-  node.default_unless[:redis][:instances][params[:name]][:port] = node[:redis][:instances][:default][:port]
-  node[:redis][:instances][params[:name]][:data_dir] = params[:data_dir] unless params[:data_dir].nil?
+  node.default_unless['redis2']['instances'][params['name']]['replication']['role'] = "master"
+  node['redis2']['instances'][params['name']] = {} unless node['redis2']['instances'].has_key? params['name']
+  node['redis2']['instances'][params['name']]['port'] = params['port'] unless params['port'].nil?
+  node.default_unless['redis2']['instances'][params['name']]['port'] = node['redis2']['instances']['default']['port']
+  node['redis2']['instances'][params['name']]['data_dir'] = params['data_dir'] unless params['data_dir'].nil?
 
-  if (not node[:redis][:instances][params[:name]].has_key?(:data_dir)) or node[:redis][:instances][params[:name]][:data_dir] == node[:redis][:instances][:default][:data_dir]
-    node[:redis][:instances][params[:name]][:data_dir] = ::File.join(node[:redis][:instances][:default][:data_dir], params[:name])
+  if (not node['redis2']['instances'][params['name']].has_key?(:data_dir)) or node['redis2']['instances'][params['name']]['data_dir'] == node['redis2']['instances']['default']['data_dir']
+    node['redis2']['instances'][params['name']]['data_dir'] = ::File.join(node['redis2']['instances']['default']['data_dir'], params['name'])
   end
-  swap_file = begin; node[:redis][:instances][params[:name]][:vm][:swap_file]; rescue; nil; end
-  if swap_file.nil? or swap_file == node[:redis][:instances][:default][:vm][:swap_file]
-    node.default[:redis][:instances][params[:name]][:vm][:swap_file] = ::File.join(
-      ::File.dirname(node[:redis][:instances][:default][:vm][:swap_file]), "swap_#{params[:name]}")
+  swap_file = begin; node['redis2']['instances'][params['name']]['vm']['swap_file']; rescue; nil; end
+  if swap_file.nil? or swap_file == node['redis2']['instances']['default']['vm']['swap_file']
+    node.default['redis2']['instances'][params['name']]['vm']['swap_file'] = ::File.join(
+      ::File.dirname(node['redis2']['instances']['default']['vm']['swap_file']), "swap_#{params['name']}")
   end
 
   init_dir = value_for_platform([:debian, :ubuntu] => {:default => "/etc/init.d/"},
                               [:centos, :redhat] => {:default => "/etc/rc.d/init.d/"},
                               :default => "/etc/init.d/")
 
-  unless params[:name] == "default"
+  unless params['name'] == "default"
     conf = ::Chef::Node::Attribute.new(
-      ::Chef::Mixin::DeepMerge.merge(node.normal[:redis][:instances][:default].to_hash, node.normal[:redis][:instances][params[:name]].to_hash),
-      ::Chef::Mixin::DeepMerge.merge(node.default[:redis][:instances][:default].to_hash, node.default[:redis][:instances][params[:name]].to_hash),
-      ::Chef::Mixin::DeepMerge.merge(node.override[:redis][:instances][:default].to_hash, node.override[:redis][:instances][params[:name]].to_hash),
+      ::Chef::Mixin::DeepMerge.merge(node.normal['redis2']['instances']['default'].to_hash, node.normal['redis2']['instances'][params['name']].to_hash),
+      ::Chef::Mixin::DeepMerge.merge(node.default['redis2']['instances']['default'].to_hash, node.default['redis2']['instances'][params['name']].to_hash),
+      ::Chef::Mixin::DeepMerge.merge(node.override['redis2']['instances']['default'].to_hash, node.override['redis2']['instances'][params['name']].to_hash),
       {})
   else
-    conf = node[:redis][:instances][:default]
+    conf = node['redis2']['instances']['default']
   end
 
-  directory node[:redis][:instances][params[:name]][:data_dir] do
-    owner node[:redis][:user]
+  directory node['redis2']['instances'][params['name']]['data_dir'] do
+    owner node['redis2']['user']
     mode "0750"
   end
 
-  conf_vars = {:conf => conf, :instance_name => params[:name], :master => params[:master]}
+  conf_vars = {:conf => conf, :instance_name => params['name'], :master => params['master']}
 
-  template ::File.join(node[:redis][:conf_dir], "#{instance_name}.conf") do
+  template ::File.join(node['redis2']['conf_dir'], "#{instance_name}.conf") do
     source "redis.conf.erb"
-    cookbook "redis"
+    cookbook "redis2"
     variables conf_vars
     mode "0644"
     notifies :restart, "service[#{instance_name}]"
   end
 
-  if node.platform == "ubuntu"
-    template "/etc/init/#{instance_name}.conf" do
-      cookbook "redis"
-      source "redis.upstart.conf.erb"
-      variables :instance_name => instance_name
-    end
-  else
-    cookbook_file ::File.join(init_dir, instance_name) do
-      source "redis.init"
-      cookbook "redis"
-      mode "0755"
-    end
+  runit_service instance_name do
+    template_name "redis"
+    cookbook "redis2"
+    options :user => node['redis2']['user'],
+      :config_file => ::File.join(node['redis2']['conf_dir'], "#{instance_name}.conf")
   end
 
   service instance_name do
-    if node.platform == "ubuntu"
-      supports :reload => false, :restart => true, :start => true, :stop => true
-      provider ::Chef::Provider::Service::Upstart
-    else
-      supports :reload => false, :restart => false, :start => true, :stop => true
-    end
-    action [:start, :enable]
+    supports :reload => false, :restart => true, :start => true, :stop => true
+    action :start
   end
 end
