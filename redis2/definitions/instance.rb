@@ -52,9 +52,4 @@ define :redis_instance, :port => nil, :data_dir => nil, :master => nil do
     options :user => node['redis2']['user'],
       :config_file => ::File.join(node['redis2']['conf_dir'], "#{instance_name}.conf")
   end
-
-  service instance_name do
-    supports :reload => false, :restart => true, :start => true, :stop => true
-    action :start
-  end
 end
