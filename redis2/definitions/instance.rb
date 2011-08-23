@@ -4,7 +4,6 @@ define :redis_instance, :port => nil, :data_dir => nil, :master => nil do
   # if no explicit replication role was defined, it's a master
   node.default_unless['redis2']['instances'][params[:name]]['replication']['role'] = "master"
   node['redis2']['instances'][params[:name]] = {} unless node['redis2']['instances'].has_key? params[:name]
-  node['redis2']['instances'][params[:name]]['port'] = params[:port] unless params[:port].nil?
   node.default_unless['redis2']['instances'][params[:name]]['port'] = node['redis2']['instances']['default']['port']
   node['redis2']['instances'][params[:name]]['data_dir'] = params[:data_dir] unless params[:data_dir].nil?
 
@@ -36,7 +35,12 @@ define :redis_instance, :port => nil, :data_dir => nil, :master => nil do
     mode "0750"
   end
 
-  conf_vars = {:conf => conf, :instance_name => params[:name], :master => params[:master]}
+  conf_vars = {
+    :conf => conf,
+    :instance_name => params[:name],
+    :master => params[:master],
+    :port => (params[:port] || node['redis2']['instances'][params[:name]]['port'])
+  }
 
   template ::File.join(node['redis2']['conf_dir'], "#{instance_name}.conf") do
     source "redis.conf.erb"
